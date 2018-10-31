@@ -7,6 +7,7 @@
 #if NETSTANDARD
 
 using System;
+using MessagePack.Internal;
 
 namespace MessagePack.Formatters
 {
@@ -19,22 +20,21 @@ namespace MessagePack.Formatters
 
     public sealed class TupleFormatter<<#= ts #>> : IMessagePackFormatter<<#= t #>>
     {
-        public int Serialize(ref byte[] bytes, int offset, <#= t #> value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, <#= t #> value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, <#= i #>);
+                MessagePackBinary.WriteArrayHeader(target, <#= i #>);
 
 <# for(var j = 1; j <= i; j++) { #>
-                offset += formatterResolver.GetFormatterWithVerify<<#= toT(j) #>>().Serialize(ref bytes, offset, value.<#= toItem(j) #>, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<<#= toT(j) #>>().Serialize(target, value.<#= toItem(j) #>, formatterResolver);
 <# } #>
 
-                return offset - startOffset;
+                return 0;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using MessagePack.Internal;
 
 namespace MessagePack.Formatters
 {
@@ -9,10 +10,10 @@ namespace MessagePack.Formatters
     {
         public static readonly NativeDateTimeFormatter Instance = new NativeDateTimeFormatter();
 
-        public int Serialize(ref byte[] bytes, int offset, DateTime value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, DateTime value, IFormatterResolver formatterResolver)
         {
             var dateData = value.ToBinary();
-            return MessagePackBinary.WriteInt64(ref bytes, offset, dateData);
+            return MessagePackBinary.WriteInt64(target, dateData);
         }
 
         public DateTime Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -31,22 +32,21 @@ namespace MessagePack.Formatters
     {
         public static readonly NativeDateTimeArrayFormatter Instance = new NativeDateTimeArrayFormatter();
 
-        public int Serialize(ref byte[] bytes, int offset, DateTime[] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, DateTime[] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
                 for (int i = 0; i < value.Length; i++)
                 {
-                    offset += MessagePackBinary.WriteInt64(ref bytes, offset, value[i].ToBinary());
+                    MessagePackBinary.WriteInt64(target, value[i].ToBinary());
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -89,11 +89,11 @@ namespace MessagePack.Formatters
         public static readonly OldSpecStringFormatter Instance = new OldSpecStringFormatter();
 
         // Old spec does not exists str 8 format.
-        public int Serialize(ref byte[] bytes, int offset, string value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, string value, IFormatterResolver formatterResolver)
         {
-            if (value == null) return MessagePackBinary.WriteNil(ref bytes, offset);
+            if (value == null) return MessagePackBinary.WriteNil(target);
 
-            MessagePackBinary.EnsureCapacity(ref bytes, offset, StringEncoding.UTF8.GetMaxByteCount(value.Length) + 5);
+            target.Reserve(StringEncoding.UTF8.GetMaxByteCount(value.Length) + 5, out byte[] bytes, out int offset);
 
             int useOffset;
             if (value.Length <= MessagePackRange.MaxFixStringLength)
@@ -121,6 +121,7 @@ namespace MessagePack.Formatters
                     Buffer.BlockCopy(bytes, writeBeginOffset, bytes, offset + 1, byteCount);
                 }
                 bytes[offset] = (byte)(MessagePackCode.MinFixStr | byteCount);
+                target.Commit(byteCount + 1);
                 return byteCount + 1;
             }
             else if (byteCount <= ushort.MaxValue)
@@ -133,6 +134,7 @@ namespace MessagePack.Formatters
                 bytes[offset] = MessagePackCode.Str16;
                 bytes[offset + 1] = unchecked((byte)(byteCount >> 8));
                 bytes[offset + 2] = unchecked((byte)byteCount);
+                target.Commit(byteCount + 3);
                 return byteCount + 3;
             }
             else
@@ -147,6 +149,7 @@ namespace MessagePack.Formatters
                 bytes[offset + 2] = unchecked((byte)(byteCount >> 16));
                 bytes[offset + 3] = unchecked((byte)(byteCount >> 8));
                 bytes[offset + 4] = unchecked((byte)byteCount);
+                target.Commit(byteCount + 5);
                 return byteCount + 5;
             }
         }
@@ -164,15 +167,17 @@ namespace MessagePack.Formatters
     {
         public static readonly OldSpecBinaryFormatter Instance = new OldSpecBinaryFormatter();
 
-        public int Serialize(ref byte[] bytes, int offset, byte[] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, byte[] value, IFormatterResolver formatterResolver)
         {
-            if (value == null) return MessagePackBinary.WriteNil(ref bytes, offset);
+            if (value == null) return MessagePackBinary.WriteNil(target);
 
             var byteCount = value.Length;
+            byte[] bytes = null;
+            int offset = 0;
 
             if (byteCount <= MessagePackRange.MaxFixStringLength)
             {
-                MessagePackBinary.EnsureCapacity(ref bytes, offset, byteCount + 1);
+                target.ReserveAndCommit(byteCount + 1, out bytes, out offset);
 
                 bytes[offset] = (byte)(MessagePackCode.MinFixStr | byteCount);
                 Buffer.BlockCopy(value, 0, bytes, offset + 1, byteCount);
@@ -180,7 +185,7 @@ namespace MessagePack.Formatters
             }
             else if (byteCount <= ushort.MaxValue)
             {
-                MessagePackBinary.EnsureCapacity(ref bytes, offset, byteCount + 3);
+                target.ReserveAndCommit(byteCount + 3, out bytes, out offset);
 
                 bytes[offset] = MessagePackCode.Str16;
                 bytes[offset + 1] = unchecked((byte)(byteCount >> 8));
@@ -190,7 +195,7 @@ namespace MessagePack.Formatters
             }
             else
             {
-                MessagePackBinary.EnsureCapacity(ref bytes, offset, byteCount + 5);
+                target.ReserveAndCommit(byteCount + 5, out bytes, out offset);
 
                 bytes[offset] = MessagePackCode.Str32;
                 bytes[offset + 1] = unchecked((byte)(byteCount >> 24));

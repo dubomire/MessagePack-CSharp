@@ -7,9 +7,9 @@ namespace MessagePack.Internal
     public static partial class UnsafeMemory32
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw4(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw4(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -21,9 +21,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw5(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw5(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -36,9 +36,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw6(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw6(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -51,9 +51,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw7(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw7(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -66,9 +66,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw8(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw8(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -81,9 +81,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw9(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw9(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -97,9 +97,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw10(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw10(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -113,9 +113,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw11(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw11(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -129,9 +129,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw12(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw12(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -145,9 +145,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw13(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw13(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -162,9 +162,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw14(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw14(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -179,9 +179,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw15(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw15(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -196,9 +196,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw16(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw16(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -213,9 +213,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw17(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw17(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -231,9 +231,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw18(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw18(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -249,9 +249,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw19(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw19(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -267,9 +267,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw20(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw20(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -285,9 +285,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw21(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw21(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -304,9 +304,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw22(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw22(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -323,9 +323,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw23(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw23(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -342,9 +342,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw24(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw24(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -361,9 +361,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw25(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw25(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -381,9 +381,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw26(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw26(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -401,9 +401,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw27(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw27(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -421,9 +421,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw28(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw28(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -441,9 +441,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw29(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw29(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -462,9 +462,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw30(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw30(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -483,9 +483,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw31(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw31(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -508,9 +508,9 @@ namespace MessagePack.Internal
     public static partial class UnsafeMemory64
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw8(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw8(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -522,9 +522,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw9(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw9(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -537,9 +537,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw10(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw10(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -552,9 +552,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw11(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw11(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -567,9 +567,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw12(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw12(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -582,9 +582,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw13(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw13(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -597,9 +597,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw14(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw14(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -612,9 +612,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw15(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw15(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -627,9 +627,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw16(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw16(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -642,9 +642,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw17(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw17(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -658,9 +658,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw18(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw18(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -674,9 +674,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw19(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw19(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -690,9 +690,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw20(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw20(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -706,9 +706,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw21(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw21(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -722,9 +722,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw22(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw22(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -738,9 +738,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw23(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw23(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -754,9 +754,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw24(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw24(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -770,9 +770,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw25(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw25(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -787,9 +787,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw26(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw26(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -804,9 +804,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw27(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw27(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -821,9 +821,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw28(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw28(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -838,9 +838,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw29(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw29(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -855,9 +855,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw30(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw30(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -872,9 +872,9 @@ namespace MessagePack.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw31(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw31(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.ReserveAndCommit(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])

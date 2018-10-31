@@ -1,26 +1,26 @@
 ﻿#if NETSTANDARD
 
 using System;
+using MessagePack.Internal;
 
 namespace MessagePack.Formatters
 {
 
     public sealed class TupleFormatter<T1> : IMessagePackFormatter<Tuple<T1>>
     {
-        public int Serialize(ref byte[] bytes, int offset, Tuple<T1> value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Tuple<T1> value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 1);
+                MessagePackBinary.WriteArrayHeader(target, 1);
 
-                offset += formatterResolver.GetFormatterWithVerify<T1>().Serialize(ref bytes, offset, value.Item1, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T1>().Serialize(target, value.Item1, formatterResolver);
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -50,21 +50,20 @@ namespace MessagePack.Formatters
 
     public sealed class TupleFormatter<T1, T2> : IMessagePackFormatter<Tuple<T1, T2>>
     {
-        public int Serialize(ref byte[] bytes, int offset, Tuple<T1, T2> value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Tuple<T1, T2> value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 2);
+                MessagePackBinary.WriteArrayHeader(target, 2);
 
-                offset += formatterResolver.GetFormatterWithVerify<T1>().Serialize(ref bytes, offset, value.Item1, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T2>().Serialize(ref bytes, offset, value.Item2, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T1>().Serialize(target, value.Item1, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T2>().Serialize(target, value.Item2, formatterResolver);
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -96,22 +95,21 @@ namespace MessagePack.Formatters
 
     public sealed class TupleFormatter<T1, T2, T3> : IMessagePackFormatter<Tuple<T1, T2, T3>>
     {
-        public int Serialize(ref byte[] bytes, int offset, Tuple<T1, T2, T3> value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Tuple<T1, T2, T3> value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 3);
+                MessagePackBinary.WriteArrayHeader(target, 3);
 
-                offset += formatterResolver.GetFormatterWithVerify<T1>().Serialize(ref bytes, offset, value.Item1, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T2>().Serialize(ref bytes, offset, value.Item2, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T3>().Serialize(ref bytes, offset, value.Item3, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T1>().Serialize(target, value.Item1, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T2>().Serialize(target, value.Item2, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T3>().Serialize(target, value.Item3, formatterResolver);
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -145,23 +143,22 @@ namespace MessagePack.Formatters
 
     public sealed class TupleFormatter<T1, T2, T3, T4> : IMessagePackFormatter<Tuple<T1, T2, T3, T4>>
     {
-        public int Serialize(ref byte[] bytes, int offset, Tuple<T1, T2, T3, T4> value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Tuple<T1, T2, T3, T4> value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 4);
+                MessagePackBinary.WriteArrayHeader(target, 4);
 
-                offset += formatterResolver.GetFormatterWithVerify<T1>().Serialize(ref bytes, offset, value.Item1, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T2>().Serialize(ref bytes, offset, value.Item2, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T3>().Serialize(ref bytes, offset, value.Item3, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T4>().Serialize(ref bytes, offset, value.Item4, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T1>().Serialize(target, value.Item1, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T2>().Serialize(target, value.Item2, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T3>().Serialize(target, value.Item3, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T4>().Serialize(target, value.Item4, formatterResolver);
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -197,24 +194,23 @@ namespace MessagePack.Formatters
 
     public sealed class TupleFormatter<T1, T2, T3, T4, T5> : IMessagePackFormatter<Tuple<T1, T2, T3, T4, T5>>
     {
-        public int Serialize(ref byte[] bytes, int offset, Tuple<T1, T2, T3, T4, T5> value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Tuple<T1, T2, T3, T4, T5> value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 5);
+                MessagePackBinary.WriteArrayHeader(target, 5);
 
-                offset += formatterResolver.GetFormatterWithVerify<T1>().Serialize(ref bytes, offset, value.Item1, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T2>().Serialize(ref bytes, offset, value.Item2, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T3>().Serialize(ref bytes, offset, value.Item3, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T4>().Serialize(ref bytes, offset, value.Item4, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T5>().Serialize(ref bytes, offset, value.Item5, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T1>().Serialize(target, value.Item1, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T2>().Serialize(target, value.Item2, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T3>().Serialize(target, value.Item3, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T4>().Serialize(target, value.Item4, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T5>().Serialize(target, value.Item5, formatterResolver);
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -252,25 +248,24 @@ namespace MessagePack.Formatters
 
     public sealed class TupleFormatter<T1, T2, T3, T4, T5, T6> : IMessagePackFormatter<Tuple<T1, T2, T3, T4, T5, T6>>
     {
-        public int Serialize(ref byte[] bytes, int offset, Tuple<T1, T2, T3, T4, T5, T6> value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Tuple<T1, T2, T3, T4, T5, T6> value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 6);
+                MessagePackBinary.WriteArrayHeader(target, 6);
 
-                offset += formatterResolver.GetFormatterWithVerify<T1>().Serialize(ref bytes, offset, value.Item1, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T2>().Serialize(ref bytes, offset, value.Item2, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T3>().Serialize(ref bytes, offset, value.Item3, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T4>().Serialize(ref bytes, offset, value.Item4, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T5>().Serialize(ref bytes, offset, value.Item5, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T6>().Serialize(ref bytes, offset, value.Item6, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T1>().Serialize(target, value.Item1, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T2>().Serialize(target, value.Item2, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T3>().Serialize(target, value.Item3, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T4>().Serialize(target, value.Item4, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T5>().Serialize(target, value.Item5, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T6>().Serialize(target, value.Item6, formatterResolver);
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -310,26 +305,25 @@ namespace MessagePack.Formatters
 
     public sealed class TupleFormatter<T1, T2, T3, T4, T5, T6, T7> : IMessagePackFormatter<Tuple<T1, T2, T3, T4, T5, T6, T7>>
     {
-        public int Serialize(ref byte[] bytes, int offset, Tuple<T1, T2, T3, T4, T5, T6, T7> value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Tuple<T1, T2, T3, T4, T5, T6, T7> value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 7);
+                MessagePackBinary.WriteArrayHeader(target, 7);
 
-                offset += formatterResolver.GetFormatterWithVerify<T1>().Serialize(ref bytes, offset, value.Item1, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T2>().Serialize(ref bytes, offset, value.Item2, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T3>().Serialize(ref bytes, offset, value.Item3, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T4>().Serialize(ref bytes, offset, value.Item4, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T5>().Serialize(ref bytes, offset, value.Item5, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T6>().Serialize(ref bytes, offset, value.Item6, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T7>().Serialize(ref bytes, offset, value.Item7, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T1>().Serialize(target, value.Item1, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T2>().Serialize(target, value.Item2, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T3>().Serialize(target, value.Item3, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T4>().Serialize(target, value.Item4, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T5>().Serialize(target, value.Item5, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T6>().Serialize(target, value.Item6, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T7>().Serialize(target, value.Item7, formatterResolver);
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -371,27 +365,26 @@ namespace MessagePack.Formatters
 
     public sealed class TupleFormatter<T1, T2, T3, T4, T5, T6, T7, TRest> : IMessagePackFormatter<Tuple<T1, T2, T3, T4, T5, T6, T7, TRest>>
     {
-        public int Serialize(ref byte[] bytes, int offset, Tuple<T1, T2, T3, T4, T5, T6, T7, TRest> value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Tuple<T1, T2, T3, T4, T5, T6, T7, TRest> value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 8);
+                MessagePackBinary.WriteArrayHeader(target, 8);
 
-                offset += formatterResolver.GetFormatterWithVerify<T1>().Serialize(ref bytes, offset, value.Item1, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T2>().Serialize(ref bytes, offset, value.Item2, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T3>().Serialize(ref bytes, offset, value.Item3, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T4>().Serialize(ref bytes, offset, value.Item4, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T5>().Serialize(ref bytes, offset, value.Item5, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T6>().Serialize(ref bytes, offset, value.Item6, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<T7>().Serialize(ref bytes, offset, value.Item7, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<TRest>().Serialize(ref bytes, offset, value.Rest, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T1>().Serialize(target, value.Item1, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T2>().Serialize(target, value.Item2, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T3>().Serialize(target, value.Item3, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T4>().Serialize(target, value.Item4, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T5>().Serialize(target, value.Item5, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T6>().Serialize(target, value.Item6, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<T7>().Serialize(target, value.Item7, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<TRest>().Serialize(target, value.Rest, formatterResolver);
 
-                return offset - startOffset;
+                return 0;
             }
         }
 

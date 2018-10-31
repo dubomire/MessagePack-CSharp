@@ -15,17 +15,12 @@ namespace MessagePack.Tests
         {
             const int ExtTypeCode = 111; // sample ext code
 
-            byte[] buffer = null;
+            int dataSize = 0;
             var formatter = resolver.GetFormatter<T>();
-            var dataSize = formatter.Serialize(ref buffer, 0, data, resolver);
-
-            var headerLength = MessagePackBinary.GetExtensionFormatHeaderLength(dataSize);
-
-            MessagePackBinary.EnsureCapacity(ref buffer, 0, headerLength);
-            Buffer.BlockCopy(buffer, 0, buffer, headerLength, dataSize);
-            MessagePackBinary.WriteExtensionFormatHeader(ref buffer, 0, ExtTypeCode, dataSize);
-
-            stream.Write(buffer, 0, dataSize + headerLength);
+            byte[] buffer = SerializeHelpers.SerializeToByte(x => dataSize = formatter.Serialize(x, data, resolver));
+            byte[] header = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteExtensionFormatHeader(x, ExtTypeCode, dataSize));
+            stream.Write(header, 0, header.Length);
+            stream.Write(buffer, 0, dataSize);
         }
 
         static T DeserializeWithLengthPrefixExt<T>(Stream stream, IFormatterResolver resolver)

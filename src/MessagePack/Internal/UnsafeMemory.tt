@@ -17,9 +17,9 @@ namespace MessagePack.Internal
     {
 <# for(var i = 4; i <= Max; i++) { #>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw<#= i #>(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw<#= i #>(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.EnsureCapacity(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])
@@ -42,9 +42,9 @@ namespace MessagePack.Internal
     {
 <# for(var i = 8; i <= Max; i++) { #>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int WriteRaw<#= i #>(ref byte[] dst, int dstOffset, byte[] src)
+        public static unsafe int WriteRaw<#= i #>(TargetBuffer target, byte[] src)
         {
-            MessagePackBinary.EnsureCapacity(ref dst, dstOffset, src.Length);
+            target.EnsureCapacity(src.Length, out byte[] dst, out int dstOffset);
 
             fixed (byte* pSrc = &src[0])
             fixed (byte* pDst = &dst[dstOffset])

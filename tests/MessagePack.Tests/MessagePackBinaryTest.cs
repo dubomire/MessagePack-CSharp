@@ -28,8 +28,7 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            MessagePackBinary.WriteNil(ref bytes, 0).Is(1);
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteNil(x).Is(1));
 
             packer.PackNull().Position.Is(bytes.Length);
             stream.ToArray().SequenceEqual(bytes).IsTrue();
@@ -48,8 +47,7 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            MessagePackBinary.WriteBoolean(ref bytes, 0, target).Is(length);
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteBoolean(x, target).Is(length));
 
             packer.Pack(target).Position.Is(bytes.Length);
             stream.ToArray().SequenceEqual(bytes).IsTrue();
@@ -70,8 +68,7 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            MessagePackBinary.WriteByte(ref bytes, 0, target).Is(length);
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteByte(x, target).Is(length));
 
             packer.Pack(target).Position.Is(bytes.Length);
             stream.ToArray().SequenceEqual(bytes).IsTrue();
@@ -99,8 +96,7 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            MessagePackBinary.WriteBytes(ref bytes, 0, target).Is(length);
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteBytes(x, target).Is(length));
 
             packer.PackBinary(target).Position.Is(bytes.Length);
             stream.ToArray().SequenceEqual(bytes).IsTrue();
@@ -128,8 +124,7 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            MessagePackBinary.WriteSByte(ref bytes, 0, target).Is(length);
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteSByte(x, target).Is(length));
 
             packer.Pack(target).Position.Is(bytes.Length);
             stream.ToArray().SequenceEqual(bytes).IsTrue();
@@ -155,8 +150,7 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            MessagePackBinary.WriteSingle(ref bytes, 0, target).Is(length);
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteSingle(x, target).Is(length));
 
             packer.Pack(target).Position.Is(bytes.Length);
             stream.ToArray().SequenceEqual(bytes).IsTrue();
@@ -182,8 +176,7 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            MessagePackBinary.WriteDouble(ref bytes, 0, target).Is(length);
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteDouble(x, target).Is(length));
 
             packer.Pack(target).Position.Is(bytes.Length);
             stream.ToArray().SequenceEqual(bytes).IsTrue();
@@ -215,8 +208,7 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            MessagePackBinary.WriteInt16(ref bytes, 0, target).Is(length);
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteInt16(x, target).Is(length));
 
             packer.Pack(target).Position.Is(bytes.Length);
             // stream.ToArray().SequenceEqual(bytes).IsTrue();
@@ -253,8 +245,7 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            MessagePackBinary.WriteInt32(ref bytes, 0, target).Is(length);
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteInt32(x, target).Is(length));
 
             // bug of msgpack-cli
             if (target == 255)
@@ -308,8 +299,7 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            MessagePackBinary.WriteInt64(ref bytes, 0, target).Is(length);
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteInt64(x, target).Is(length));
 
             // bug of msgpack-cli
             if (target == 255)
@@ -355,8 +345,7 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            MessagePackBinary.WriteMapHeader(ref bytes, 0, target).Is(length);
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteMapHeader(x, target).Is(length));
 
             packer.PackMapHeader((int)target).Position.Is(bytes.Length);
             stream.ToArray().SequenceEqual(bytes).IsTrue();
@@ -390,8 +379,7 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            MessagePackBinary.WriteArrayHeader(ref bytes, 0, target).Is(length);
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteArrayHeader(x, target).Is(length));
 
             packer.PackArrayHeader((int)target).Position.Is(bytes.Length);
             stream.ToArray().SequenceEqual(bytes).IsTrue();
@@ -422,8 +410,7 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            MessagePackBinary.WriteUInt16(ref bytes, 0, target).Is(length);
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteUInt16(x, target).Is(length));
 
             packer.Pack(target).Position.Is(bytes.Length);
             stream.ToArray().SequenceEqual(bytes).IsTrue();
@@ -451,8 +438,7 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            MessagePackBinary.WriteUInt32(ref bytes, 0, target).Is(length);
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteUInt32(x, target).Is(length));
 
             packer.Pack(target).Position.Is(bytes.Length);
             stream.ToArray().SequenceEqual(bytes).IsTrue();
@@ -484,8 +470,7 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            MessagePackBinary.WriteUInt64(ref bytes, 0, target).Is(length);
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteUInt64(x, target).Is(length));
 
             packer.Pack(target).Position.Is(bytes.Length);
             stream.ToArray().SequenceEqual(bytes).IsTrue();
@@ -528,8 +513,8 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            var returnLength = MessagePackBinary.WriteString(ref bytes, 0, target);
+            int returnLength = 0;
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => returnLength = MessagePackBinary.WriteString(x, target));
 
             var referencePacked = packer.PackString(target);
             referencePacked.Position.Is(returnLength);
@@ -547,8 +532,8 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            var returnLength = MessagePackBinary.WriteString(ref bytes, 0, target);
+            int returnLength = 0;
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => returnLength = MessagePackBinary.WriteString(x, target));
 
             var referencePacked = packer.PackString(target);
             referencePacked.Position.Is(returnLength);
@@ -571,8 +556,8 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            var returnLength = MessagePackBinary.WriteChar(ref bytes, 0, target);
+            int returnLength = 0;
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => returnLength = MessagePackBinary.WriteChar(x, target));
 
             var referencePacked = packer.Pack(target);
             referencePacked.Position.Is(returnLength);
@@ -626,8 +611,8 @@ namespace MessagePack.Tests
         {
             (var stream, var packer) = CreateReferencePacker();
 
-            byte[] bytes = null;
-            var returnLength = MessagePackBinary.WriteExtensionFormat(ref bytes, 0, typeCode, target);
+            int returnLength = 0;
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => returnLength = MessagePackBinary.WriteExtensionFormat(x, typeCode, target));
 
             var referencePacked = packer.PackExtendedTypeValue((byte)typeCode, target);
             referencePacked.Position.Is(returnLength);
@@ -671,8 +656,8 @@ namespace MessagePack.Tests
         [MemberData(nameof(dateTimeTestData))]
         public void DateTimeTest(DateTime target, int expectedLength)
         {
-            byte[] bytes = null;
-            var returnLength = MessagePackBinary.WriteDateTime(ref bytes, 0, target);
+            int returnLength = 0;
+            byte[] bytes = SerializeHelpers.SerializeToByte(x => returnLength = MessagePackBinary.WriteDateTime(x, target));
             returnLength.Is(expectedLength);
 
             int readSize;
@@ -690,47 +675,38 @@ namespace MessagePack.Tests
             // Int64 can accepts UInt32
             {
                 int readSize;
-                byte[] small = null;
-                byte[] target = null;
-                MessagePackBinary.WriteByte(ref small, 0, byte.MaxValue);
+                byte[] small = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteByte(x, byte.MaxValue));
                 MessagePackBinary.ReadInt16(small, 0, out readSize).Is(byte.MaxValue);
-                MessagePackBinary.WriteInt16(ref target, 0, byte.MaxValue);
+                byte[] target = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteInt16(x, byte.MaxValue));
                 target.SequenceEqual(small).IsTrue();
             }
             {
                 int readSize;
-                byte[] small = null;
-                byte[] target = null;
-                MessagePackBinary.WriteByte(ref small, 0, byte.MaxValue);
+                byte[] small = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteByte(x, byte.MaxValue));
                 MessagePackBinary.ReadInt32(small, 0, out readSize).Is(byte.MaxValue);
-                MessagePackBinary.WriteInt32(ref target, 0, byte.MaxValue);
+                byte[] target = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteInt32(x, byte.MaxValue));
                 target.SequenceEqual(small).IsTrue();
 
-                small = target = null;
-                MessagePackBinary.WriteUInt16(ref small, 0, ushort.MaxValue);
+                small = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteUInt16(x, ushort.MaxValue));
                 MessagePackBinary.ReadInt32(small, 0, out readSize).Is(ushort.MaxValue);
-                MessagePackBinary.WriteInt32(ref target, 0, ushort.MaxValue);
+                target = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteInt32(x, ushort.MaxValue));
                 target.SequenceEqual(small).IsTrue();
             }
             {
                 int readSize;
-                byte[] small = null;
-                byte[] target = null;
-                MessagePackBinary.WriteByte(ref small, 0, byte.MaxValue);
+                byte[] small = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteByte(x, byte.MaxValue));
                 MessagePackBinary.ReadInt64(small, 0, out readSize).Is(byte.MaxValue);
-                MessagePackBinary.WriteInt64(ref target, 0, byte.MaxValue);
+                byte[] target = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteInt64(x, byte.MaxValue));
                 target.SequenceEqual(small).IsTrue();
 
-                small = target = null;
-                MessagePackBinary.WriteUInt16(ref small, 0, ushort.MaxValue);
+                small = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteUInt16(x, ushort.MaxValue));
                 MessagePackBinary.ReadInt64(small, 0, out readSize).Is(ushort.MaxValue);
-                MessagePackBinary.WriteInt64(ref target, 0, ushort.MaxValue);
+                target = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteInt64(x, ushort.MaxValue));
                 target.SequenceEqual(small).IsTrue();
 
-                small = target = null;
-                MessagePackBinary.WriteUInt32(ref small, 0, uint.MaxValue);
+                small = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteUInt32(x, uint.MaxValue));
                 MessagePackBinary.ReadInt64(small, 0, out readSize).Is(uint.MaxValue);
-                MessagePackBinary.WriteInt64(ref target, 0, uint.MaxValue);
+                target = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteInt64(x, uint.MaxValue));
                 target.SequenceEqual(small).IsTrue();
             }
         }

@@ -6,12 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharedData;
+using MessagePack.Internal;
 
 namespace MessagePack.Tests
 {
     public class MessagePackBinaryStream
     {
-        delegate int RefAction(ref byte[] bytes, int offset);
+        delegate void RefAction(TargetBuffer target);
 
         [Fact]
         public void Write()
@@ -21,160 +22,162 @@ namespace MessagePack.Tests
                 const int CheckOffset = 10;
 
                 var ms = new MemoryStream();
-                byte[] bytes = null;
-
                 ms.Position = CheckOffset;
                 streamAction(ms);
-                var len = bytesAction(ref bytes, CheckOffset);
-                MessagePackBinary.FastResize(ref bytes, CheckOffset + len);
+
+                byte[] bytes = SerializeHelpers.SerializeToByte(x =>
+                {
+                    x.ReserveAndCommit(10, out byte[] b, out int o);
+                    bytesAction(x);
+                });
 
                 ms.ToArray().Is(bytes);
             }
 
             Check(
                       (x) => MessagePackBinary.WriteArrayHeader(x, 999),
-    (ref byte[] x, int y) => MessagePackBinary.WriteArrayHeader(ref x, y, 999));
+    (TargetBuffer target) => MessagePackBinary.WriteArrayHeader(target, 999));
 
             Check(
                       (x) => MessagePackBinary.WriteArrayHeaderForceArray32Block(x, 999),
-    (ref byte[] x, int y) => MessagePackBinary.WriteArrayHeaderForceArray32Block(ref x, y, 999));
+    (TargetBuffer target) => MessagePackBinary.WriteArrayHeaderForceArray32Block(target, 999));
 
             Check(
                       (x) => MessagePackBinary.WriteBoolean(x, true),
-    (ref byte[] x, int y) => MessagePackBinary.WriteBoolean(ref x, y, true));
+    (TargetBuffer target) => MessagePackBinary.WriteBoolean(target, true));
 
             Check(
                       (x) => MessagePackBinary.WriteByte(x, (byte)100),
-    (ref byte[] x, int y) => MessagePackBinary.WriteByte(ref x, y, (byte)100));
+    (TargetBuffer target) => MessagePackBinary.WriteByte(target, (byte)100));
 
             Check(
                       (x) => MessagePackBinary.WriteByteForceByteBlock(x, (byte)11),
-    (ref byte[] x, int y) => MessagePackBinary.WriteByteForceByteBlock(ref x, y, (byte)11));
+    (TargetBuffer target) => MessagePackBinary.WriteByteForceByteBlock(target, (byte)11));
 
             Check(
                       (x) => MessagePackBinary.WriteBytes(x, new byte[] { 1, 10, 100 }),
-    (ref byte[] x, int y) => MessagePackBinary.WriteBytes(ref x, y, new byte[] { 1, 10, 100 }));
+    (TargetBuffer target) => MessagePackBinary.WriteBytes(target, new byte[] { 1, 10, 100 }));
 
             Check(
                       (x) => MessagePackBinary.WriteChar(x, 'z'),
-    (ref byte[] x, int y) => MessagePackBinary.WriteChar(ref x, y, 'z'));
+    (TargetBuffer target) => MessagePackBinary.WriteChar(target, 'z'));
 
             var now = DateTime.UtcNow;
             Check(
                       (x) => MessagePackBinary.WriteDateTime(x, now),
-    (ref byte[] x, int y) => MessagePackBinary.WriteDateTime(ref x, y, now));
+    (TargetBuffer target) => MessagePackBinary.WriteDateTime(target, now));
 
             Check(
                       (x) => MessagePackBinary.WriteDouble(x, 10.31231f),
-    (ref byte[] x, int y) => MessagePackBinary.WriteDouble(ref x, y, 10.31231f));
+    (TargetBuffer target) => MessagePackBinary.WriteDouble(target, 10.31231f));
 
             Check(
                       (x) => MessagePackBinary.WriteExtensionFormat(x, 10, new byte[] { 1, 10, 100 }),
-    (ref byte[] x, int y) => MessagePackBinary.WriteExtensionFormat(ref x, y, 10, new byte[] { 1, 10, 100 }));
+    (TargetBuffer target) => MessagePackBinary.WriteExtensionFormat(target, 10, new byte[] { 1, 10, 100 }));
 
             Check(
                       (x) => MessagePackBinary.WriteFixedArrayHeaderUnsafe(x, 'z'),
-    (ref byte[] x, int y) => MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref x, y, 'z'));
+    (TargetBuffer target) => MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 'z'));
 
             Check(
                       (x) => MessagePackBinary.WriteFixedMapHeaderUnsafe(x, 'z'),
-    (ref byte[] x, int y) => MessagePackBinary.WriteFixedMapHeaderUnsafe(ref x, y, 'z'));
+    (TargetBuffer target) => MessagePackBinary.WriteFixedMapHeaderUnsafe(target, 'z'));
 
             Check(
                       (x) => MessagePackBinary.WriteFixedStringUnsafe(x, "aaa", Encoding.UTF8.GetByteCount("aaa")),
-    (ref byte[] x, int y) => MessagePackBinary.WriteFixedStringUnsafe(ref x, y, "aaa", Encoding.UTF8.GetByteCount("aaa")));
+    (TargetBuffer target) => MessagePackBinary.WriteFixedStringUnsafe(target, "aaa", Encoding.UTF8.GetByteCount("aaa")));
 
             Check(
                       (x) => MessagePackBinary.WriteInt16(x, 321),
-    (ref byte[] x, int y) => MessagePackBinary.WriteInt16(ref x, y, 321));
+    (TargetBuffer target) => MessagePackBinary.WriteInt16(target, 321));
 
             Check(
                       (x) => MessagePackBinary.WriteInt16ForceInt16Block(x, 321),
-    (ref byte[] x, int y) => MessagePackBinary.WriteInt16ForceInt16Block(ref x, y, 321));
+    (TargetBuffer target) => MessagePackBinary.WriteInt16ForceInt16Block(target, 321));
 
             Check(
                       (x) => MessagePackBinary.WriteInt32(x, 321),
-    (ref byte[] x, int y) => MessagePackBinary.WriteInt32(ref x, y, 321));
+    (TargetBuffer target) => MessagePackBinary.WriteInt32(target, 321));
 
             Check(
                       (x) => MessagePackBinary.WriteInt32ForceInt32Block(x, 321),
-    (ref byte[] x, int y) => MessagePackBinary.WriteInt32ForceInt32Block(ref x, y, 321));
+    (TargetBuffer target) => MessagePackBinary.WriteInt32ForceInt32Block(target, 321));
 
             Check(
                       (x) => MessagePackBinary.WriteInt64(x, 321),
-    (ref byte[] x, int y) => MessagePackBinary.WriteInt64(ref x, y, 321));
+    (TargetBuffer target) => MessagePackBinary.WriteInt64(target, 321));
 
             Check(
                       (x) => MessagePackBinary.WriteInt64ForceInt64Block(x, 321),
-    (ref byte[] x, int y) => MessagePackBinary.WriteInt64ForceInt64Block(ref x, y, 321));
+    (TargetBuffer target) => MessagePackBinary.WriteInt64ForceInt64Block(target, 321));
 
             Check(
                       (x) => MessagePackBinary.WriteMapHeader(x, 321),
-    (ref byte[] x, int y) => MessagePackBinary.WriteMapHeader(ref x, y, 321));
+    (TargetBuffer target) => MessagePackBinary.WriteMapHeader(target, 321));
 
             Check(
                       (x) => MessagePackBinary.WriteMapHeaderForceMap32Block(x, 321),
-    (ref byte[] x, int y) => MessagePackBinary.WriteMapHeaderForceMap32Block(ref x, y, 321));
+    (TargetBuffer target) => MessagePackBinary.WriteMapHeaderForceMap32Block(target, 321));
 
             Check(
                       (x) => MessagePackBinary.WriteNil(x),
-    (ref byte[] x, int y) => MessagePackBinary.WriteNil(ref x, y));
+    (TargetBuffer target) => MessagePackBinary.WriteNil(target));
 
             Check(
                       (x) => MessagePackBinary.WritePositiveFixedIntUnsafe(x, 12),
-    (ref byte[] x, int y) => MessagePackBinary.WritePositiveFixedIntUnsafe(ref x, y, 12));
+    (TargetBuffer target) => MessagePackBinary.WritePositiveFixedIntUnsafe(target, 12));
 
             Check(
                       (x) => MessagePackBinary.WriteSByte(x, 12),
-    (ref byte[] x, int y) => MessagePackBinary.WriteSByte(ref x, y, 12));
+    (TargetBuffer target) => MessagePackBinary.WriteSByte(target, 12));
 
             Check(
                       (x) => MessagePackBinary.WriteSByteForceSByteBlock(x, 12),
-    (ref byte[] x, int y) => MessagePackBinary.WriteSByteForceSByteBlock(ref x, y, 12));
+    (TargetBuffer target) => MessagePackBinary.WriteSByteForceSByteBlock(target, 12));
 
             Check(
                       (x) => MessagePackBinary.WriteSingle(x, 123),
-    (ref byte[] x, int y) => MessagePackBinary.WriteSingle(ref x, y, 123));
+    (TargetBuffer target) => MessagePackBinary.WriteSingle(target, 123));
 
             Check(
                       (x) => MessagePackBinary.WriteString(x, "aaa"),
-    (ref byte[] x, int y) => MessagePackBinary.WriteString(ref x, y, "aaa"));
+    (TargetBuffer target) => MessagePackBinary.WriteString(target, "aaa"));
 
             Check(
                       (x) => MessagePackBinary.WriteStringBytes(x, new byte[] { 1, 10 }),
-    (ref byte[] x, int y) => MessagePackBinary.WriteStringBytes(ref x, y, new byte[] { 1, 10 }));
+    (TargetBuffer target) => MessagePackBinary.WriteStringBytes(target, new byte[] { 1, 10 }));
 
             Check(
                       (x) => MessagePackBinary.WriteStringForceStr32Block(x, "zzz"),
-    (ref byte[] x, int y) => MessagePackBinary.WriteStringForceStr32Block(ref x, y, "zzz"));
+    (TargetBuffer target) => MessagePackBinary.WriteStringForceStr32Block(target, "zzz"));
 
             Check(
                       (x) => MessagePackBinary.WriteStringUnsafe(x, "zzz", Encoding.UTF8.GetByteCount("zzz")),
-    (ref byte[] x, int y) => MessagePackBinary.WriteStringUnsafe(ref x, y, "zzz", Encoding.UTF8.GetByteCount("zzz")));
+    (TargetBuffer target) => MessagePackBinary.WriteStringUnsafe(target, "zzz", Encoding.UTF8.GetByteCount("zzz")));
 
             Check(
                       (x) => MessagePackBinary.WriteUInt16(x, 31),
-    (ref byte[] x, int y) => MessagePackBinary.WriteUInt16(ref x, y, 31));
+    (TargetBuffer target) => MessagePackBinary.WriteUInt16(target, 31));
 
             Check(
                       (x) => MessagePackBinary.WriteUInt16ForceUInt16Block(x, 32),
-    (ref byte[] x, int y) => MessagePackBinary.WriteUInt16ForceUInt16Block(ref x, y, 32));
+    (TargetBuffer target) => MessagePackBinary.WriteUInt16ForceUInt16Block(target, 32));
 
             Check(
                       (x) => MessagePackBinary.WriteUInt32(x, 11),
-    (ref byte[] x, int y) => MessagePackBinary.WriteUInt32(ref x, y, 11));
+    (TargetBuffer target) => MessagePackBinary.WriteUInt32(target, 11));
 
             Check(
                       (x) => MessagePackBinary.WriteUInt32ForceUInt32Block(x, 11),
-    (ref byte[] x, int y) => MessagePackBinary.WriteUInt32ForceUInt32Block(ref x, y, 11));
+    (TargetBuffer target) => MessagePackBinary.WriteUInt32ForceUInt32Block(target, 11));
 
             Check(
                       (x) => MessagePackBinary.WriteUInt64(x, 11),
-    (ref byte[] x, int y) => MessagePackBinary.WriteUInt64(ref x, y, 11));
+    (TargetBuffer target) => MessagePackBinary.WriteUInt64(target, 11));
 
             Check(
                       (x) => MessagePackBinary.WriteUInt64ForceUInt64Block(x, 11),
-    (ref byte[] x, int y) => MessagePackBinary.WriteUInt64ForceUInt64Block(ref x, y, 11));
+    (TargetBuffer target) => MessagePackBinary.WriteUInt64ForceUInt64Block(target, 11));
         }
 
 
@@ -185,10 +188,11 @@ namespace MessagePack.Tests
             {
                 const int CheckOffset = 10;
 
-                byte[] bytes = null;
-                var len = MessagePack.Resolvers.StandardResolver.Instance.GetFormatter<T>().Serialize(ref bytes, CheckOffset, data, MessagePack.Resolvers.StandardResolver.Instance);
-                MessagePackBinary.FastResize(ref bytes, CheckOffset + len);
-
+                byte[] bytes = SerializeHelpers.SerializeToByte(x =>
+                {
+                    x.ReserveAndCommit(10, out byte[] b, out int o);
+                    MessagePack.Resolvers.StandardResolver.Instance.GetFormatter<T>().Serialize(x, data, MessagePack.Resolvers.StandardResolver.Instance);
+                });
 
                 var ms = new MemoryStream(bytes);
                 ms.Position = CheckOffset;
@@ -200,10 +204,11 @@ namespace MessagePack.Tests
             {
                 const int CheckOffset = 10;
 
-                byte[] bytes = null;
-                var len = MessagePack.Resolvers.StandardResolver.Instance.GetFormatter<T>().Serialize(ref bytes, CheckOffset, data, MessagePack.Resolvers.StandardResolver.Instance);
-                MessagePackBinary.FastResize(ref bytes, CheckOffset + len);
-
+                byte[] bytes = SerializeHelpers.SerializeToByte(x =>
+                {
+                    x.ReserveAndCommit(10, out byte[] b, out int o);
+                    MessagePack.Resolvers.StandardResolver.Instance.GetFormatter<T>().Serialize(x, data, MessagePack.Resolvers.StandardResolver.Instance);
+                });
 
                 var ms = new MemoryStream(bytes);
                 ms.Position = CheckOffset;

@@ -1,66 +1,60 @@
 ﻿using System;
+using System.Buffers;
 
 namespace MessagePack.Internal
 {
-    internal sealed class BufferPool : ArrayPool<byte>
+    internal sealed class BufferPool
     {
-        public static readonly BufferPool Default = new BufferPool(65535);
+        public static readonly ArrayPool<byte> Default = new CustomPool();
 
-        public BufferPool(int bufferLength)
-            : base(bufferLength)
+        public static void Resize(ref byte[] array, int newSize)
         {
+            if (newSize < 0) throw new ArgumentOutOfRangeException("newSize");
+
+            byte[] array2 = array;
+            if (array2 == null)
+            {
+                array = Default.Rent(newSize);
+                return;
+            }
+
+            if (array2.Length != newSize)
+            {
+                byte[] array3 = Default.Rent(newSize);
+                Buffer.BlockCopy(array2, 0, array3, 0, (array2.Length > newSize) ? newSize : array2.Length);
+                array = array3;
+                Default.Return(array2);
+            }
         }
     }
 
-    internal class ArrayPool<T>
+    internal class CustomPool : ArrayPool<byte>
     {
-        readonly int bufferLength;
-        readonly object gate;
-        int index;
-        T[][] buffers;
+        private const int SmallArrayBoundary = 65536;
+        private static readonly ArrayPool<byte> smallArrays = ArrayPool<byte>.Create(SmallArrayBoundary, 100);
+        private static readonly ArrayPool<byte> largeArrays = ArrayPool<byte>.Create(32 * 1024 * 1024, 20);
 
-        public ArrayPool(int bufferLength)
+        public override byte[] Rent(int minimumLength)
         {
-            this.bufferLength = bufferLength;
-            this.buffers = new T[4][];
-            this.gate = new object();
-        }
-
-        public T[] Rent()
-        {
-            lock (gate)
+            if (minimumLength <= SmallArrayBoundary)
             {
-                if (index >= buffers.Length)
-                {
-                    Array.Resize(ref buffers, buffers.Length * 2);
-                }
-
-                if (buffers[index] == null)
-                {
-                    buffers[index] = new T[bufferLength];
-                }
-
-                var buffer = buffers[index];
-                buffers[index] = null;
-                index++;
-
-                return buffer;
+                return smallArrays.Rent(minimumLength);
+            }
+            else
+            {
+                return largeArrays.Rent(minimumLength);
             }
         }
 
-        public void Return(T[] array)
+        public override void Return(byte[] array, bool clearArray = false)
         {
-            if (array.Length != bufferLength)
+            if (array.Length <= SmallArrayBoundary)
             {
-                throw new InvalidOperationException("return buffer is not from pool");
+                smallArrays.Return(array, clearArray);
             }
-
-            lock (gate)
+            else
             {
-                if (index != 0)
-                {
-                    buffers[--index] = array;
-                }
+                largeArrays.Return(array, clearArray);
             }
         }
     }

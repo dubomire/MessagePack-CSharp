@@ -40,8 +40,7 @@ namespace MessagePack.Tests
         {
             {
                 var original = Guid.NewGuid();
-                byte[] bytes = null;
-                GuidFormatter.Instance.Serialize(ref bytes, 0, original, null).Is(38);
+                byte[] bytes = SerializeHelpers.SerializeToByte(x => GuidFormatter.Instance.Serialize(x, original, null).Is(38));
 
                 int readSize;
                 GuidFormatter.Instance.Deserialize(bytes, 0, null, out readSize).Is(original);

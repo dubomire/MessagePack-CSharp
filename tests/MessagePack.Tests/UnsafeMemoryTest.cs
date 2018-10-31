@@ -10,7 +10,7 @@ namespace MessagePack.Tests
 {
     public class UnsafeMemoryTest
     {
-        delegate int WriteDelegate(ref byte[] xs, int offset, byte[] ys);
+        delegate int WriteDelegate(TargetBuffer target, byte[] ys);
 
         [Theory]
         [InlineData('a', 1)]
@@ -24,8 +24,8 @@ namespace MessagePack.Tests
             var s = new string(c, count);
             var bin1 = MessagePackBinary.GetEncodedStringBytes(s);
             var bin2 = MessagePackSerializer.Serialize(s);
-            byte[] bin3 = null;
-            var size = MessagePackBinary.WriteRaw(ref bin3, 0, bin1);
+            int size = 0;
+            byte[] bin3 = SerializeHelpers.SerializeToByte(x => size = MessagePackBinary.WriteRaw(x, bin1));
             MessagePackBinary.FastResize(ref bin3, size);
 
             MessagePack.Internal.ByteArrayComparer.Equals(bin1, 0, bin1.Length, bin2).IsTrue();
@@ -39,8 +39,8 @@ namespace MessagePack.Tests
             for (int i = 1; i <= MessagePackRange.MaxFixStringLength; i++)
             {
                 var src = Enumerable.Range(0, i).Select(x => (byte)x).ToArray();
-                byte[] dst = null;
-                var len = ((typeof(UnsafeMemory32).GetMethod("WriteRaw" + i)).CreateDelegate(typeof(WriteDelegate)) as WriteDelegate).Invoke(ref dst, 0, src);
+                int len = 0;
+                byte[] dst = SerializeHelpers.SerializeToByte(x => len = ((typeof(UnsafeMemory32).GetMethod("WriteRaw" + i)).CreateDelegate(typeof(WriteDelegate)) as WriteDelegate).Invoke(x, src));
                 len.Is(i);
                 MessagePackBinary.FastResize(ref dst, len);
                 MessagePack.Internal.ByteArrayComparer.Equals(src, 0, src.Length, dst).IsTrue();
@@ -49,8 +49,8 @@ namespace MessagePack.Tests
             for (int i = 1; i <= MessagePackRange.MaxFixStringLength; i++)
             {
                 var src = Enumerable.Range(0, i).Select(x => (byte)x).ToArray();
-                byte[] dst = null;
-                var len = ((typeof(UnsafeMemory64).GetMethod("WriteRaw" + i)).CreateDelegate(typeof(WriteDelegate)) as WriteDelegate).Invoke(ref dst, 0, src);
+                int len = 0;
+                byte[] dst = SerializeHelpers.SerializeToByte(x => len = ((typeof(UnsafeMemory64).GetMethod("WriteRaw" + i)).CreateDelegate(typeof(WriteDelegate)) as WriteDelegate).Invoke(x, src));
                 len.Is(i);
                 MessagePackBinary.FastResize(ref dst, len);
                 MessagePack.Internal.ByteArrayComparer.Equals(src, 0, src.Length, dst).IsTrue();
@@ -59,8 +59,12 @@ namespace MessagePack.Tests
             for (int i = 1; i <= MessagePackRange.MaxFixStringLength; i++)
             {
                 var src = Enumerable.Range(0, i).Select(x => (byte)x).ToArray();
-                byte[] dst = new byte[3];
-                var len = ((typeof(UnsafeMemory32).GetMethod("WriteRaw" + i)).CreateDelegate(typeof(WriteDelegate)) as WriteDelegate).Invoke(ref dst, 3, src);
+                int len = 0;
+                byte[] dst = SerializeHelpers.SerializeToByte(x =>
+                {
+                    x.ReserveAndCommit(3, out byte[] b, out int o);
+                    len = ((typeof(UnsafeMemory32).GetMethod("WriteRaw" + i)).CreateDelegate(typeof(WriteDelegate)) as WriteDelegate).Invoke(x, src);
+                });
                 len.Is(i);
                 dst = dst.Skip(3).Take(len).ToArray();
                 MessagePack.Internal.ByteArrayComparer.Equals(src, 0, src.Length, dst).IsTrue();
@@ -69,8 +73,12 @@ namespace MessagePack.Tests
             for (int i = 1; i <= MessagePackRange.MaxFixStringLength; i++)
             {
                 var src = Enumerable.Range(0, i).Select(x => (byte)x).ToArray();
-                byte[] dst = new byte[3];
-                var len = ((typeof(UnsafeMemory64).GetMethod("WriteRaw" + i)).CreateDelegate(typeof(WriteDelegate)) as WriteDelegate).Invoke(ref dst, 3, src);
+                int len = 0;
+                byte[] dst = SerializeHelpers.SerializeToByte(x =>
+                {
+                    x.ReserveAndCommit(3, out byte[] b, out int o);
+                    len = ((typeof(UnsafeMemory64).GetMethod("WriteRaw" + i)).CreateDelegate(typeof(WriteDelegate)) as WriteDelegate).Invoke(x, src);
+                });
                 len.Is(i);
                 dst = dst.Skip(3).Take(len).ToArray();
                 MessagePack.Internal.ByteArrayComparer.Equals(src, 0, src.Length, dst).IsTrue();

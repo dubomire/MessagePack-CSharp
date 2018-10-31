@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using MessagePack.Internal;
 
 namespace MessagePack
 {
@@ -13,7 +14,7 @@ namespace MessagePack
     {
         public static class NonGeneric
         {
-            delegate int RawFormatterSerialize(ref byte[] bytes, int offset, object value, IFormatterResolver formatterResolver);
+            delegate int RawFormatterSerialize(TargetBuffer target, object value, IFormatterResolver formatterResolver);
             delegate object RawFormatterDeserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize);
 
             static readonly Func<Type, CompiledMethods> CreateCompiledMethods;
@@ -44,9 +45,9 @@ namespace MessagePack
                 GetOrAdd(type).serialize4.Invoke(stream, obj, resolver);
             }
 
-            public static int Serialize(Type type, ref byte[] bytes, int offset, object value, IFormatterResolver resolver)
+            public static int Serialize(Type type, TargetBuffer target, object value, IFormatterResolver resolver)
             {
-                return GetOrAdd(type).serialize5.Invoke(ref bytes, offset, value, resolver);
+                return GetOrAdd(type).serialize5.Invoke(target, value, resolver);
             }
 
             public static object Deserialize(Type type, byte[] bytes)
@@ -177,18 +178,17 @@ namespace MessagePack
                         this.serialize4 = lambda;
                     }
                     {
-                        // delegate int RawFormatterSerialize(ref byte[] bytes, int offset, object value, IFormatterResolver formatterResolver);
-                        var serialize = GetMethod(type, new Type[] { typeof(byte[]).MakeByRefType(), typeof(int), null, typeof(IFormatterResolver) });
+                        // delegate int RawFormatterSerialize(TargetBuffer buffer, object value, IFormatterResolver formatterResolver);
+                        var serialize = GetMethod(type, new Type[] { typeof(TargetBuffer), null, typeof(IFormatterResolver) });
 
-                        var param1 = Expression.Parameter(typeof(byte[]).MakeByRefType(), "bytes");
-                        var param2 = Expression.Parameter(typeof(int), "offset");
+                        var param1 = Expression.Parameter(typeof(TargetBuffer), "target");
                         var param3 = Expression.Parameter(typeof(object), "value");
                         var param4 = Expression.Parameter(typeof(IFormatterResolver), "formatterResolver");
 
-                        var body = Expression.Call(serialize, param1, param2, ti.IsValueType
+                        var body = Expression.Call(serialize, param1, ti.IsValueType
                             ? Expression.Unbox(param3, type)
                             : Expression.Convert(param3, type), param4);
-                        var lambda = Expression.Lambda<RawFormatterSerialize>(body, param1, param2, param3, param4).Compile();
+                        var lambda = Expression.Lambda<RawFormatterSerialize>(body, param1, param3, param4).Compile();
 
                         this.serialize5 = lambda;
                     }

@@ -1,31 +1,31 @@
 ﻿using MessagePack.Formatters;
 using System.Collections.Immutable;
 using System;
+using MessagePack.Internal;
 
 namespace MessagePack.ImmutableCollection
 {
     // Immutablearray<T>.Enumerator is 'not' IEnumerator<T>, can't use abstraction layer.
     public class ImmutableArrayFormatter<T> : IMessagePackFormatter<ImmutableArray<T>>
     {
-        public int Serialize(ref byte[] bytes, int offset, ImmutableArray<T> value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, ImmutableArray<T> value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
                 var formatter = formatterResolver.GetFormatterWithVerify<T>();
 
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
 
                 foreach (var item in value)
                 {
-                    offset += formatter.Serialize(ref bytes, offset, item, formatterResolver);
+                    formatter.Serialize(target, item, formatterResolver);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using MessagePack.Formatters;
+using MessagePack.Internal;
 using MessagePack.Resolvers;
 using System;
 using System.Collections.Generic;
@@ -48,9 +49,9 @@ namespace MessagePack.Tests
                 return MessagePackBinary.ReadInt32(bytes, offset, out readSize) * 10;
             }
 
-            public int Serialize(ref byte[] bytes, int offset, int value, IFormatterResolver formatterResolver)
+            public int Serialize(TargetBuffer target, int value, IFormatterResolver formatterResolver)
             {
-                return MessagePackBinary.WriteInt32(ref bytes, offset, value * 10);
+                return MessagePackBinary.WriteInt32(target, value * 10);
             }
         }
 
@@ -62,9 +63,9 @@ namespace MessagePack.Tests
                 return s + s;
             }
 
-            public int Serialize(ref byte[] bytes, int offset, string value, IFormatterResolver formatterResolver)
+            public int Serialize(TargetBuffer target, string value, IFormatterResolver formatterResolver)
             {
-                return MessagePackBinary.WriteString(ref bytes, offset, value + value);
+                return MessagePackBinary.WriteString(target, value + value);
             }
         }
 

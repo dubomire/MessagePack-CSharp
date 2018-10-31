@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -203,17 +202,13 @@ namespace MessagePack.Tests
             var c = new String('あ', 130);
             var d = new String('あ', 40000);
 
-            byte[] bytesA = null;
-            MessagePackBinary.WriteString(ref bytesA, 0, a).Is(Encoding.UTF8.GetByteCount(a) + 1);
+            byte[] bytesA = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteString(x, a).Is(Encoding.UTF8.GetByteCount(a) + 1));
 
-            byte[] bytesB = null;
-            MessagePackBinary.WriteString(ref bytesB, 0, b).Is(Encoding.UTF8.GetByteCount(b) + 2);
+            byte[] bytesB = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteString(x, b).Is(Encoding.UTF8.GetByteCount(b) + 2));
 
-            byte[] bytesC = null;
-            MessagePackBinary.WriteString(ref bytesC, 0, c).Is(Encoding.UTF8.GetByteCount(c) + 3);
+            byte[] bytesC = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteString(x, c).Is(Encoding.UTF8.GetByteCount(c) + 3));
 
-            byte[] bytesD = null;
-            MessagePackBinary.WriteString(ref bytesD, 0, d).Is(Encoding.UTF8.GetByteCount(d) + 5);
+            byte[] bytesD = SerializeHelpers.SerializeToByte(x => MessagePackBinary.WriteString(x, d).Is(Encoding.UTF8.GetByteCount(d) + 5));
 
             int readSize = 0;
             MessagePackBinary.ReadString(bytesA, 0, out readSize).Is(a);
@@ -221,6 +216,7 @@ namespace MessagePack.Tests
             MessagePackBinary.ReadString(bytesC, 0, out readSize).Is(c);
             MessagePackBinary.ReadString(bytesD, 0, out readSize).Is(d);
         }
+
 
         // https://github.com/neuecc/MessagePack-CSharp/issues/22
         [Fact]

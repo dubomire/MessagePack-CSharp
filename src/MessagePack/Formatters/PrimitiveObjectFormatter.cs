@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Collections.Generic;
+using MessagePack.Internal;
 
 namespace MessagePack.Formatters
 {
@@ -48,11 +49,11 @@ namespace MessagePack.Formatters
 
 #endif
 
-        public int Serialize(ref byte[] bytes, int offset, object value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, object value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
 
             var t = value.GetType();
@@ -63,35 +64,35 @@ namespace MessagePack.Formatters
                 switch (code)
                 {
                     case 0:
-                        return MessagePackBinary.WriteBoolean(ref bytes, offset, (bool)value);
+                        return MessagePackBinary.WriteBoolean(target, (bool)value);
                     case 1:
-                        return MessagePackBinary.WriteChar(ref bytes, offset, (char)value);
+                        return MessagePackBinary.WriteChar(target, (char)value);
                     case 2:
-                        return MessagePackBinary.WriteSByteForceSByteBlock(ref bytes, offset, (sbyte)value);
+                        return MessagePackBinary.WriteSByteForceSByteBlock(target, (sbyte)value);
                     case 3:
-                        return MessagePackBinary.WriteByteForceByteBlock(ref bytes, offset, (byte)value);
+                        return MessagePackBinary.WriteByteForceByteBlock(target, (byte)value);
                     case 4:
-                        return MessagePackBinary.WriteInt16ForceInt16Block(ref bytes, offset, (Int16)value);
+                        return MessagePackBinary.WriteInt16ForceInt16Block(target, (Int16)value);
                     case 5:
-                        return MessagePackBinary.WriteUInt16ForceUInt16Block(ref bytes, offset, (UInt16)value);
+                        return MessagePackBinary.WriteUInt16ForceUInt16Block(target, (UInt16)value);
                     case 6:
-                        return MessagePackBinary.WriteInt32ForceInt32Block(ref bytes, offset, (Int32)value);
+                        return MessagePackBinary.WriteInt32ForceInt32Block(target, (Int32)value);
                     case 7:
-                        return MessagePackBinary.WriteUInt32ForceUInt32Block(ref bytes, offset, (UInt32)value);
+                        return MessagePackBinary.WriteUInt32ForceUInt32Block(target, (UInt32)value);
                     case 8:
-                        return MessagePackBinary.WriteInt64ForceInt64Block(ref bytes, offset, (Int64)value);
+                        return MessagePackBinary.WriteInt64ForceInt64Block(target, (Int64)value);
                     case 9:
-                        return MessagePackBinary.WriteUInt64ForceUInt64Block(ref bytes, offset, (UInt64)value);
+                        return MessagePackBinary.WriteUInt64ForceUInt64Block(target, (UInt64)value);
                     case 10:
-                        return MessagePackBinary.WriteSingle(ref bytes, offset, (Single)value);
+                        return MessagePackBinary.WriteSingle(target, (Single)value);
                     case 11:
-                        return MessagePackBinary.WriteDouble(ref bytes, offset, (double)value);
+                        return MessagePackBinary.WriteDouble(target, (double)value);
                     case 12:
-                        return MessagePackBinary.WriteDateTime(ref bytes, offset, (DateTime)value);
+                        return MessagePackBinary.WriteDateTime(target, (DateTime)value);
                     case 13:
-                        return MessagePackBinary.WriteString(ref bytes, offset, (string)value);
+                        return MessagePackBinary.WriteString(target, (string)value);
                     case 14:
-                        return MessagePackBinary.WriteBytes(ref bytes, offset, (byte[])value);
+                        return MessagePackBinary.WriteBytes(target, (byte[])value);
                     default:
                         throw new InvalidOperationException("Not supported primitive object resolver. type:" + t.Name);
                 }
@@ -109,21 +110,21 @@ namespace MessagePack.Formatters
                     switch (code2)
                     {
                         case 2:
-                            return MessagePackBinary.WriteSByteForceSByteBlock(ref bytes, offset, (sbyte)value);
+                            return MessagePackBinary.WriteSByteForceSByteBlock(target, (sbyte)value);
                         case 3:
-                            return MessagePackBinary.WriteByteForceByteBlock(ref bytes, offset, (byte)value);
+                            return MessagePackBinary.WriteByteForceByteBlock(target, (byte)value);
                         case 4:
-                            return MessagePackBinary.WriteInt16ForceInt16Block(ref bytes, offset, (Int16)value);
+                            return MessagePackBinary.WriteInt16ForceInt16Block(target, (Int16)value);
                         case 5:
-                            return MessagePackBinary.WriteUInt16ForceUInt16Block(ref bytes, offset, (UInt16)value);
+                            return MessagePackBinary.WriteUInt16ForceUInt16Block(target, (UInt16)value);
                         case 6:
-                            return MessagePackBinary.WriteInt32ForceInt32Block(ref bytes, offset, (Int32)value);
+                            return MessagePackBinary.WriteInt32ForceInt32Block(target, (Int32)value);
                         case 7:
-                            return MessagePackBinary.WriteUInt32ForceUInt32Block(ref bytes, offset, (UInt32)value);
+                            return MessagePackBinary.WriteUInt32ForceUInt32Block(target, (UInt32)value);
                         case 8:
-                            return MessagePackBinary.WriteInt64ForceInt64Block(ref bytes, offset, (Int64)value);
+                            return MessagePackBinary.WriteInt64ForceInt64Block(target, (Int64)value);
                         case 9:
-                            return MessagePackBinary.WriteUInt64ForceUInt64Block(ref bytes, offset, (UInt64)value);
+                            return MessagePackBinary.WriteUInt64ForceUInt64Block(target, (UInt64)value);
                         default:
                             break;
                     }
@@ -131,25 +132,23 @@ namespace MessagePack.Formatters
                 else if (value is System.Collections.IDictionary) // check IDictionary first
                 {
                     var d = value as System.Collections.IDictionary;
-                    var startOffset = offset;
-                    offset += MessagePackBinary.WriteMapHeader(ref bytes, offset, d.Count);
+                    MessagePackBinary.WriteMapHeader(target, d.Count);
                     foreach (System.Collections.DictionaryEntry item in d)
                     {
-                        offset += Serialize(ref bytes, offset, item.Key, formatterResolver);
-                        offset += Serialize(ref bytes, offset, item.Value, formatterResolver);
+                        Serialize(target, item.Key, formatterResolver);
+                        Serialize(target, item.Value, formatterResolver);
                     }
-                    return offset - startOffset;
+                    return 0;
                 }
                 else if (value is System.Collections.ICollection)
                 {
                     var c = value as System.Collections.ICollection;
-                    var startOffset = offset;
-                    offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, c.Count);
+                    MessagePackBinary.WriteArrayHeader(target, c.Count);
                     foreach (var item in c)
                     {
-                        offset += Serialize(ref bytes, offset, item, formatterResolver);
+                        Serialize(target, item, formatterResolver);
                     }
-                    return offset - startOffset;
+                    return 0;
                 }
             }
 

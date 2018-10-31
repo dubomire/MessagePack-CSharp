@@ -14,21 +14,7 @@ namespace MessagePack
     {
         public static IMessagePackFormatter<T> GetFormatterWithVerify<T>(this IFormatterResolver resolver)
         {
-            IMessagePackFormatter<T> formatter;
-            try
-            {
-                formatter = resolver.GetFormatter<T>();
-            }
-            catch (TypeInitializationException ex)
-            {
-                Exception inner = ex;
-                while (inner.InnerException != null)
-                {
-                    inner = inner.InnerException;
-                }
-
-                throw inner;
-            }
+            IMessagePackFormatter<T> formatter = resolver.GetFormatter<T>();
 
             if (formatter == null)
             {

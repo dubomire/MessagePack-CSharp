@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MessagePack.Internal;
 
 namespace MessagePack.Formatters
 {
     public sealed class NullableFormatter<T> : IMessagePackFormatter<T?>
         where T : struct
     {
-        public int Serialize(ref byte[] bytes, int offset, T? value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, T? value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                return formatterResolver.GetFormatterWithVerify<T>().Serialize(ref bytes, offset, value.Value, formatterResolver);
+                return formatterResolver.GetFormatterWithVerify<T>().Serialize(target, value.Value, formatterResolver);
             }
         }
 
@@ -43,15 +44,15 @@ namespace MessagePack.Formatters
             this.underlyingFormatter = underlyingFormatter;
         }
 
-        public int Serialize(ref byte[] bytes, int offset, T? value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, T? value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                return underlyingFormatter.Serialize(ref bytes, offset, value.Value, formatterResolver);
+                return underlyingFormatter.Serialize(target, value.Value, formatterResolver);
             }
         }
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using MessagePack.Internal;
 
 #if NETSTANDARD
 using System.Collections.Concurrent;
@@ -12,25 +13,24 @@ namespace MessagePack.Formatters
 {
     public sealed class ArrayFormatter<T> : IMessagePackFormatter<T[]>
     {
-        public int Serialize(ref byte[] bytes, int offset, T[] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, T[] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
                 var formatter = formatterResolver.GetFormatterWithVerify<T>();
 
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
 
                 for (int i = 0; i < value.Length; i++)
                 {
-                    offset += formatter.Serialize(ref bytes, offset, value[i], formatterResolver);
+                    formatter.Serialize(target, value[i], formatterResolver);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -69,15 +69,15 @@ namespace MessagePack.Formatters
 
         }
 
-        public int Serialize(ref byte[] bytes, int offset, ArraySegment<byte> value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, ArraySegment<byte> value, IFormatterResolver formatterResolver)
         {
             if (value.Array == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                return MessagePackBinary.WriteBytes(ref bytes, offset, value.Array, value.Offset, value.Count);
+                return MessagePackBinary.WriteBytes(target, value.Array, value.Offset, value.Count);
             }
         }
 
@@ -99,27 +99,26 @@ namespace MessagePack.Formatters
 
     public sealed class ArraySegmentFormatter<T> : IMessagePackFormatter<ArraySegment<T>>
     {
-        public int Serialize(ref byte[] bytes, int offset, ArraySegment<T> value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, ArraySegment<T> value, IFormatterResolver formatterResolver)
         {
             if (value.Array == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
                 var formatter = formatterResolver.GetFormatterWithVerify<T>();
 
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Count);
+                MessagePackBinary.WriteArrayHeader(target, value.Count);
 
                 var array = value.Array;
                 for (int i = 0; i < value.Count; i++)
                 {
                     var item = array[value.Offset + i];
-                    offset += formatter.Serialize(ref bytes, offset, item, formatterResolver);
+                    formatter.Serialize(target, item, formatterResolver);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -141,26 +140,25 @@ namespace MessagePack.Formatters
     // List<T> is popular format, should avoid abstraction.
     public sealed class ListFormatter<T> : IMessagePackFormatter<List<T>>
     {
-        public int Serialize(ref byte[] bytes, int offset, List<T> value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, List<T> value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
                 var formatter = formatterResolver.GetFormatterWithVerify<T>();
 
                 var c = value.Count;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, c);
+                MessagePackBinary.WriteArrayHeader(target, c);
 
                 for (int i = 0; i < c; i++)
                 {
-                    offset += formatter.Serialize(ref bytes, offset, value[i], formatterResolver);
+                    formatter.Serialize(target, value[i], formatterResolver);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -194,11 +192,11 @@ namespace MessagePack.Formatters
         where TCollection : IEnumerable<TElement>
         where TEnumerator : IEnumerator<TElement>
     {
-        public int Serialize(ref byte[] bytes, int offset, TCollection value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, TCollection value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
@@ -206,28 +204,26 @@ namespace MessagePack.Formatters
                 var array = value as TElement[];
                 if (array != null)
                 {
-                    var startOffset = offset;
                     var formatter = formatterResolver.GetFormatterWithVerify<TElement>();
 
-                    offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, array.Length);
+                    MessagePackBinary.WriteArrayHeader(target, array.Length);
 
                     foreach (var item in array)
                     {
-                        offset += formatter.Serialize(ref bytes, offset, item, formatterResolver);
+                        formatter.Serialize(target, item, formatterResolver);
                     }
 
-                    return offset - startOffset;
+                    return 0;
                 }
                 else
                 {
-                    var startOffset = offset;
                     var formatter = formatterResolver.GetFormatterWithVerify<TElement>();
 
                     // knows count or not.
                     var seqCount = GetCount(value);
                     if (seqCount != null)
                     {
-                        offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, seqCount.Value);
+                        MessagePackBinary.WriteArrayHeader(target, seqCount.Value);
 
                         // Unity's foreach struct enumerator causes boxing so iterate manually.
                         var e = GetSourceEnumerator(value);
@@ -236,9 +232,9 @@ namespace MessagePack.Formatters
                             while (e.MoveNext())
                             {
 #if NETSTANDARD
-                                offset += formatter.Serialize(ref bytes, offset, e.Current, formatterResolver);
+                                formatter.Serialize(target, e.Current, formatterResolver);
 #else
-                                offset += formatter.Serialize(ref bytes, (int)offset, (TElement)e.Current, (IFormatterResolver)formatterResolver);
+                                formatter.Serialize(target, (TElement)e.Current, (IFormatterResolver)formatterResolver);
 #endif
                             }
                         }
@@ -247,51 +243,39 @@ namespace MessagePack.Formatters
                             e.Dispose();
                         }
 
-                        return offset - startOffset;
+                        return 0;
                     }
                     else
                     {
-                        // write message first -> open header space -> write header
-                        var writeStarOffset = offset;
 
                         var count = 0;
                         var moveCount = 0;
 
-                        // count = 16 <= 65535, header len is "3" so choose default space.
-                        offset += 3;
-
-                        var e = GetSourceEnumerator(value);
-                        try
+                        using (TargetBuffer collectionTarget = new TargetBuffer())
                         {
-                            while (e.MoveNext())
+                            var e = GetSourceEnumerator(value);
+                            try
                             {
-                                count++;
+                                while (e.MoveNext())
+                                {
+                                    count++;
 #if NETSTANDARD
-                                var writeSize = formatter.Serialize(ref bytes, offset, e.Current, formatterResolver);
+                                    var writeSize = formatter.Serialize(collectionTarget, e.Current, formatterResolver);
 #else
-                                var writeSize = formatter.Serialize(ref bytes, (int)offset, (TElement)e.Current, (IFormatterResolver)formatterResolver);
+                                    var writeSize = formatter.Serialize(collectionTarget, (TElement)e.Current, (IFormatterResolver)formatterResolver);
 #endif
-                                moveCount += writeSize;
-                                offset += writeSize;
+                                    moveCount += writeSize;
+                                }
                             }
-                        }
-                        finally
-                        {
-                            e.Dispose();
+                            finally
+                            {
+                                e.Dispose();
+                            }
+                            MessagePackBinary.WriteArrayHeader(target, count);
+                            target.Append(collectionTarget);
                         }
 
-                        var headerLength = MessagePackBinary.GetArrayHeaderLength(count);
-                        if (headerLength != 3)
-                        {
-                            if (headerLength == 1) offset -= 2; // 1
-                            else offset += 2; // 5
-
-                            MessagePackBinary.EnsureCapacity(ref bytes, offset, headerLength);
-                            Buffer.BlockCopy(bytes, writeStarOffset + 3, bytes, writeStarOffset + headerLength, moveCount);
-                        }
-                        MessagePackBinary.WriteArrayHeader(ref bytes, writeStarOffset, count);
-
-                        return offset - startOffset;
+                        return 0;
                     }
                 }
             }
@@ -571,19 +555,18 @@ namespace MessagePack.Formatters
     // [Key, [Array]]
     public sealed class InterfaceGroupingFormatter<TKey, TElement> : IMessagePackFormatter<IGrouping<TKey, TElement>>
     {
-        public int Serialize(ref byte[] bytes, int offset, IGrouping<TKey, TElement> value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, IGrouping<TKey, TElement> value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, 2);
-                offset += formatterResolver.GetFormatterWithVerify<TKey>().Serialize(ref bytes, offset, value.Key, formatterResolver);
-                offset += formatterResolver.GetFormatterWithVerify<IEnumerable<TElement>>().Serialize(ref bytes, offset, value, formatterResolver);
-                return offset - startOffset;
+                MessagePackBinary.WriteArrayHeader(target, 2);
+                formatterResolver.GetFormatterWithVerify<TKey>().Serialize(target, value.Key, formatterResolver);
+                formatterResolver.GetFormatterWithVerify<IEnumerable<TElement>>().Serialize(target, value, formatterResolver);
+                return 0;
             }
         }
 
@@ -708,24 +691,23 @@ namespace MessagePack.Formatters
     public sealed class NonGenericListFormatter<T> : IMessagePackFormatter<T>
         where T : class, IList, new()
     {
-        public int Serialize(ref byte[] bytes, int offset, T value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, T value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                MessagePackBinary.WriteNil(ref bytes, offset);
+                MessagePackBinary.WriteNil(target);
                 return 1;
             }
 
             var formatter = formatterResolver.GetFormatterWithVerify<object>();
-            var startOffset = offset;
 
-            offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Count);
+            MessagePackBinary.WriteArrayHeader(target, value.Count);
             foreach (var item in value)
             {
-                offset += formatter.Serialize(ref bytes, offset, item, formatterResolver);
+                formatter.Serialize(target, item, formatterResolver);
             }
 
-            return offset - startOffset;
+            return 0;
         }
 
         public T Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -763,24 +745,23 @@ namespace MessagePack.Formatters
 
         }
 
-        public int Serialize(ref byte[] bytes, int offset, IList value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, IList value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                MessagePackBinary.WriteNil(ref bytes, offset);
+                MessagePackBinary.WriteNil(target);
                 return 1;
             }
 
             var formatter = formatterResolver.GetFormatterWithVerify<object>();
-            var startOffset = offset;
 
-            offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Count);
+            MessagePackBinary.WriteArrayHeader(target, value.Count);
             foreach (var item in value)
             {
-                offset += formatter.Serialize(ref bytes, offset, item, formatterResolver);
+                formatter.Serialize(target, item, formatterResolver);
             }
 
-            return offset - startOffset;
+            return 0;
         }
 
         public IList Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -812,25 +793,24 @@ namespace MessagePack.Formatters
     public sealed class NonGenericDictionaryFormatter<T> : IMessagePackFormatter<T>
         where T : class, IDictionary, new()
     {
-        public int Serialize(ref byte[] bytes, int offset, T value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, T value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                MessagePackBinary.WriteNil(ref bytes, offset);
+                MessagePackBinary.WriteNil(target);
                 return 1;
             }
 
             var formatter = formatterResolver.GetFormatterWithVerify<object>();
-            var startOffset = offset;
 
-            offset += MessagePackBinary.WriteMapHeader(ref bytes, offset, value.Count);
+            MessagePackBinary.WriteMapHeader(target, value.Count);
             foreach (DictionaryEntry item in value)
             {
-                offset += formatter.Serialize(ref bytes, offset, item.Key, formatterResolver);
-                offset += formatter.Serialize(ref bytes, offset, item.Value, formatterResolver);
+                formatter.Serialize(target, item.Key, formatterResolver);
+                formatter.Serialize(target, item.Value, formatterResolver);
             }
 
-            return offset - startOffset;
+            return 0;
         }
 
         public T Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -871,25 +851,24 @@ namespace MessagePack.Formatters
 
         }
 
-        public int Serialize(ref byte[] bytes, int offset, IDictionary value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, IDictionary value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                MessagePackBinary.WriteNil(ref bytes, offset);
+                MessagePackBinary.WriteNil(target);
                 return 1;
             }
 
             var formatter = formatterResolver.GetFormatterWithVerify<object>();
-            var startOffset = offset;
 
-            offset += MessagePackBinary.WriteMapHeader(ref bytes, offset, value.Count);
+            MessagePackBinary.WriteMapHeader(target, value.Count);
             foreach (DictionaryEntry item in value)
             {
-                offset += formatter.Serialize(ref bytes, offset, item.Key, formatterResolver);
-                offset += formatter.Serialize(ref bytes, offset, item.Value, formatterResolver);
+                formatter.Serialize(target, item.Key, formatterResolver);
+                formatter.Serialize(target, item.Value, formatterResolver);
             }
 
-            return offset - startOffset;
+            return 0;
         }
 
         public IDictionary Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)

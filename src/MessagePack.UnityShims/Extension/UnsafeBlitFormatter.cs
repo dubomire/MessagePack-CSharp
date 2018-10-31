@@ -1,6 +1,7 @@
 ﻿#if ENABLE_UNSAFE_MSGPACK
 
 using MessagePack.Formatters;
+using MessagePack.Internal;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -51,23 +52,20 @@ namespace MessagePack.Unity.Extension
         protected abstract void CopySerializeUnsafe(ref T[] src, ref byte[] dest, int destOffset, int byteLength);
         protected abstract void CopyDeserializeUnsafe(ref byte[] src, int srcOffset, ref T[] dest, int byteLength);
 
-        public unsafe int Serialize(ref byte[] bytes, int offset, T[] value, IFormatterResolver formatterResolver)
+        public unsafe int Serialize(TargetBuffer target, T[] value, IFormatterResolver formatterResolver)
         {
-            if (value == null) return MessagePackBinary.WriteNil(ref bytes, offset);
-
-            var startOffset = offset;
+            if (value == null) return MessagePackBinary.WriteNil(target);
 
             var byteLen = value.Length * StructLength;
 
-            offset += MessagePackBinary.WriteExtensionFormatHeader(ref bytes, offset, TypeCode, byteLen);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, byteLen); // write original header(not array header)
-            offset += MessagePackBinary.WriteBoolean(ref bytes, offset, BitConverter.IsLittleEndian);
+            MessagePackBinary.WriteExtensionFormatHeader(target, TypeCode, byteLen);
+            MessagePackBinary.WriteInt32(target, byteLen); // write original header(not array header)
+            MessagePackBinary.WriteBoolean(target, BitConverter.IsLittleEndian);
 
-            MessagePackBinary.EnsureCapacity(ref bytes, offset, byteLen);
+            target.ReserveAndCommit(byteLen, out byte[] bytes, out int offset);
             CopySerializeUnsafe(ref value, ref bytes, offset, byteLen);
 
-            offset += byteLen;
-            return offset - startOffset;
+            return 0;
         }
 
         public unsafe T[] Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)

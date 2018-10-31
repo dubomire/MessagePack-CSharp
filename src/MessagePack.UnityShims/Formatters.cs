@@ -1,19 +1,18 @@
 ﻿using System;
 using MessagePack;
+using MessagePack.Internal;
 
 namespace MessagePack.Unity
 {
     public sealed class Vector2Formatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.Vector2>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.Vector2 value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.Vector2 value, global::MessagePack.IFormatterResolver formatterResolver)
         {
-
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 2);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.x);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.y);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 2);
+            MessagePackBinary.WriteSingle(target, value.x);
+            MessagePackBinary.WriteSingle(target, value.y);
+            return 0;
         }
 
         public global::UnityEngine.Vector2 Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -60,15 +59,13 @@ namespace MessagePack.Unity
     public sealed class Vector3Formatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.Vector3>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.Vector3 value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.Vector3 value, global::MessagePack.IFormatterResolver formatterResolver)
         {
-
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 3);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.x);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.y);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.z);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 3);
+            MessagePackBinary.WriteSingle(target, value.x);
+            MessagePackBinary.WriteSingle(target, value.y);
+            MessagePackBinary.WriteSingle(target, value.z);
+            return 0;
         }
 
         public global::UnityEngine.Vector3 Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -119,16 +116,15 @@ namespace MessagePack.Unity
     public sealed class Vector4Formatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.Vector4>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.Vector4 value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.Vector4 value, global::MessagePack.IFormatterResolver formatterResolver)
         {
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 4);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.x);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.y);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.z);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.w);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 4);
+            MessagePackBinary.WriteSingle(target, value.x);
+            MessagePackBinary.WriteSingle(target, value.y);
+            MessagePackBinary.WriteSingle(target, value.z);
+            MessagePackBinary.WriteSingle(target, value.w);
+            return 0;
         }
 
         public global::UnityEngine.Vector4 Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -183,16 +179,14 @@ namespace MessagePack.Unity
     public sealed class QuaternionFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.Quaternion>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.Quaternion value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.Quaternion value, global::MessagePack.IFormatterResolver formatterResolver)
         {
-
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 4);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.x);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.y);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.z);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.w);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 4);
+            MessagePackBinary.WriteSingle(target, value.x);
+            MessagePackBinary.WriteSingle(target, value.y);
+            MessagePackBinary.WriteSingle(target, value.z);
+            MessagePackBinary.WriteSingle(target, value.w);
+            return 0;
         }
 
         public global::UnityEngine.Quaternion Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -247,16 +241,14 @@ namespace MessagePack.Unity
     public sealed class ColorFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.Color>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.Color value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.Color value, global::MessagePack.IFormatterResolver formatterResolver)
         {
-
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 4);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.r);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.g);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.b);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.a);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 4);
+            MessagePackBinary.WriteSingle(target, value.r);
+            MessagePackBinary.WriteSingle(target, value.g);
+            MessagePackBinary.WriteSingle(target, value.b);
+            MessagePackBinary.WriteSingle(target, value.a);
+            return 0;
         }
 
         public global::UnityEngine.Color Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -311,14 +303,13 @@ namespace MessagePack.Unity
     public sealed class BoundsFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.Bounds>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.Bounds value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.Bounds value, global::MessagePack.IFormatterResolver formatterResolver)
         {
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 2);
-            offset += formatterResolver.GetFormatterWithVerify<global::UnityEngine.Vector3>().Serialize(ref bytes, offset, value.center, formatterResolver);
-            offset += formatterResolver.GetFormatterWithVerify<global::UnityEngine.Vector3>().Serialize(ref bytes, offset, value.size, formatterResolver);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 2);
+            formatterResolver.GetFormatterWithVerify<global::UnityEngine.Vector3>().Serialize(target, value.center, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::UnityEngine.Vector3>().Serialize(target, value.size, formatterResolver);
+            return 0;
         }
 
         public global::UnityEngine.Bounds Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -365,16 +356,15 @@ namespace MessagePack.Unity
     public sealed class RectFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.Rect>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.Rect value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.Rect value, global::MessagePack.IFormatterResolver formatterResolver)
         {
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 4);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.x);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.y);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.width);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.height);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 4);
+            MessagePackBinary.WriteSingle(target, value.x);
+            MessagePackBinary.WriteSingle(target, value.y);
+            MessagePackBinary.WriteSingle(target, value.width);
+            MessagePackBinary.WriteSingle(target, value.height);
+            return 0;
         }
 
         public global::UnityEngine.Rect Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -429,9 +419,9 @@ namespace MessagePack.Unity
 
     public sealed class WrapModeFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.WrapMode>
     {
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.WrapMode value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.WrapMode value, global::MessagePack.IFormatterResolver formatterResolver)
         {
-            return MessagePackBinary.WriteInt32(ref bytes, offset, (Int32)value);
+            return MessagePackBinary.WriteInt32(target, (Int32)value);
         }
 
         public global::UnityEngine.WrapMode Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -442,9 +432,9 @@ namespace MessagePack.Unity
 
     public sealed class GradientModeFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.GradientMode>
     {
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.GradientMode value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.GradientMode value, global::MessagePack.IFormatterResolver formatterResolver)
         {
-            return MessagePackBinary.WriteInt32(ref bytes, offset, (Int32)value);
+            return MessagePackBinary.WriteInt32(target, (Int32)value);
         }
 
         public global::UnityEngine.GradientMode Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -456,16 +446,15 @@ namespace MessagePack.Unity
     public sealed class KeyframeFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.Keyframe>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.Keyframe value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.Keyframe value, global::MessagePack.IFormatterResolver formatterResolver)
         {
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 4);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.time);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.value);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.inTangent);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.outTangent);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 4);
+            MessagePackBinary.WriteSingle(target, value.time);
+            MessagePackBinary.WriteSingle(target, value.value);
+            MessagePackBinary.WriteSingle(target, value.inTangent);
+            MessagePackBinary.WriteSingle(target, value.outTangent);
+            return 0;
         }
 
         public global::UnityEngine.Keyframe Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -524,19 +513,18 @@ namespace MessagePack.Unity
     public sealed class AnimationCurveFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.AnimationCurve>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.AnimationCurve value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.AnimationCurve value, global::MessagePack.IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return global::MessagePack.MessagePackBinary.WriteNil(ref bytes, offset);
+                return global::MessagePack.MessagePackBinary.WriteNil(target);
             }
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 3);
-            offset += formatterResolver.GetFormatterWithVerify<global::UnityEngine.Keyframe[]>().Serialize(ref bytes, offset, value.keys, formatterResolver);
-            offset += formatterResolver.GetFormatterWithVerify<global::UnityEngine.WrapMode>().Serialize(ref bytes, offset, value.postWrapMode, formatterResolver);
-            offset += formatterResolver.GetFormatterWithVerify<global::UnityEngine.WrapMode>().Serialize(ref bytes, offset, value.preWrapMode, formatterResolver);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 3);
+            formatterResolver.GetFormatterWithVerify<global::UnityEngine.Keyframe[]>().Serialize(target, value.keys, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::UnityEngine.WrapMode>().Serialize(target, value.postWrapMode, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::UnityEngine.WrapMode>().Serialize(target, value.preWrapMode, formatterResolver);
+            return 0;
         }
 
         public global::UnityEngine.AnimationCurve Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -590,28 +578,27 @@ namespace MessagePack.Unity
     public sealed class Matrix4x4Formatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.Matrix4x4>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.Matrix4x4 value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.Matrix4x4 value, global::MessagePack.IFormatterResolver formatterResolver)
         {
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteArrayHeader(ref bytes, offset, 16);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.m00);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.m10);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.m20);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.m30);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.m01);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.m11);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.m21);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.m31);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.m02);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.m12);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.m22);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.m32);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.m03);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.m13);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.m23);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.m33);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteArrayHeader(target, 16);
+            MessagePackBinary.WriteSingle(target, value.m00);
+            MessagePackBinary.WriteSingle(target, value.m10);
+            MessagePackBinary.WriteSingle(target, value.m20);
+            MessagePackBinary.WriteSingle(target, value.m30);
+            MessagePackBinary.WriteSingle(target, value.m01);
+            MessagePackBinary.WriteSingle(target, value.m11);
+            MessagePackBinary.WriteSingle(target, value.m21);
+            MessagePackBinary.WriteSingle(target, value.m31);
+            MessagePackBinary.WriteSingle(target, value.m02);
+            MessagePackBinary.WriteSingle(target, value.m12);
+            MessagePackBinary.WriteSingle(target, value.m22);
+            MessagePackBinary.WriteSingle(target, value.m32);
+            MessagePackBinary.WriteSingle(target, value.m03);
+            MessagePackBinary.WriteSingle(target, value.m13);
+            MessagePackBinary.WriteSingle(target, value.m23);
+            MessagePackBinary.WriteSingle(target, value.m33);
+            return 0;
         }
 
         public global::UnityEngine.Matrix4x4 Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -730,14 +717,13 @@ namespace MessagePack.Unity
     public sealed class GradientColorKeyFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.GradientColorKey>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.GradientColorKey value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.GradientColorKey value, global::MessagePack.IFormatterResolver formatterResolver)
         {
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 2);
-            offset += formatterResolver.GetFormatterWithVerify<global::UnityEngine.Color>().Serialize(ref bytes, offset, value.color, formatterResolver);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.time);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 2);
+            formatterResolver.GetFormatterWithVerify<global::UnityEngine.Color>().Serialize(target, value.color, formatterResolver);
+            MessagePackBinary.WriteSingle(target, value.time);
+            return 0;
         }
 
         public global::UnityEngine.GradientColorKey Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -786,14 +772,13 @@ namespace MessagePack.Unity
     public sealed class GradientAlphaKeyFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.GradientAlphaKey>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.GradientAlphaKey value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.GradientAlphaKey value, global::MessagePack.IFormatterResolver formatterResolver)
         {
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 2);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.alpha);
-            offset += MessagePackBinary.WriteSingle(ref bytes, offset, value.time);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 2);
+            MessagePackBinary.WriteSingle(target, value.alpha);
+            MessagePackBinary.WriteSingle(target, value.time);
+            return 0;
         }
 
         public global::UnityEngine.GradientAlphaKey Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -842,19 +827,18 @@ namespace MessagePack.Unity
     public sealed class GradientFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.Gradient>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.Gradient value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.Gradient value, global::MessagePack.IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return global::MessagePack.MessagePackBinary.WriteNil(ref bytes, offset);
+                return global::MessagePack.MessagePackBinary.WriteNil(target);
             }
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 3);
-            offset += formatterResolver.GetFormatterWithVerify<global::UnityEngine.GradientColorKey[]>().Serialize(ref bytes, offset, value.colorKeys, formatterResolver);
-            offset += formatterResolver.GetFormatterWithVerify<global::UnityEngine.GradientAlphaKey[]>().Serialize(ref bytes, offset, value.alphaKeys, formatterResolver);
-            offset += formatterResolver.GetFormatterWithVerify<global::UnityEngine.GradientMode>().Serialize(ref bytes, offset, value.mode, formatterResolver);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 3);
+            formatterResolver.GetFormatterWithVerify<global::UnityEngine.GradientColorKey[]>().Serialize(target, value.colorKeys, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::UnityEngine.GradientAlphaKey[]>().Serialize(target, value.alphaKeys, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::UnityEngine.GradientMode>().Serialize(target, value.mode, formatterResolver);
+            return 0;
         }
 
         public global::UnityEngine.Gradient Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -909,16 +893,15 @@ namespace MessagePack.Unity
     public sealed class Color32Formatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.Color32>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.Color32 value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.Color32 value, global::MessagePack.IFormatterResolver formatterResolver)
         {
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 4);
-            offset += MessagePackBinary.WriteByte(ref bytes, offset, value.r);
-            offset += MessagePackBinary.WriteByte(ref bytes, offset, value.g);
-            offset += MessagePackBinary.WriteByte(ref bytes, offset, value.b);
-            offset += MessagePackBinary.WriteByte(ref bytes, offset, value.a);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 4);
+            MessagePackBinary.WriteByte(target, value.r);
+            MessagePackBinary.WriteByte(target, value.g);
+            MessagePackBinary.WriteByte(target, value.b);
+            MessagePackBinary.WriteByte(target, value.a);
+            return 0;
         }
 
         public global::UnityEngine.Color32 Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -977,20 +960,19 @@ namespace MessagePack.Unity
     public sealed class RectOffsetFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.RectOffset>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.RectOffset value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.RectOffset value, global::MessagePack.IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return global::MessagePack.MessagePackBinary.WriteNil(ref bytes, offset);
+                return global::MessagePack.MessagePackBinary.WriteNil(target);
             }
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 4);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, value.left);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, value.right);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, value.top);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, value.bottom);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 4);
+            MessagePackBinary.WriteInt32(target, value.left);
+            MessagePackBinary.WriteInt32(target, value.right);
+            MessagePackBinary.WriteInt32(target, value.top);
+            MessagePackBinary.WriteInt32(target, value.bottom);
+            return 0;
         }
 
         public global::UnityEngine.RectOffset Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -1050,13 +1032,12 @@ namespace MessagePack.Unity
     public sealed class LayerMaskFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.LayerMask>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.LayerMask value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.LayerMask value, global::MessagePack.IFormatterResolver formatterResolver)
         {
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 1);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, value.value);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 1);
+            MessagePackBinary.WriteInt32(target, value.value);
+            return 0;
         }
 
         public global::UnityEngine.LayerMask Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -1101,14 +1082,13 @@ namespace MessagePack.Unity
     public sealed class Vector2IntFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.Vector2Int>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.Vector2Int value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.Vector2Int value, global::MessagePack.IFormatterResolver formatterResolver)
         {
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 2);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, value.x);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, value.y);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 2);
+            MessagePackBinary.WriteInt32(target, value.x);
+            MessagePackBinary.WriteInt32(target, value.y);
+            return 0;
         }
 
         public global::UnityEngine.Vector2Int Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -1157,15 +1137,14 @@ namespace MessagePack.Unity
     public sealed class Vector3IntFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.Vector3Int>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.Vector3Int value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.Vector3Int value, global::MessagePack.IFormatterResolver formatterResolver)
         {
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 3);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, value.x);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, value.y);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, value.z);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 3);
+            MessagePackBinary.WriteInt32(target, value.x);
+            MessagePackBinary.WriteInt32(target, value.y);
+            MessagePackBinary.WriteInt32(target, value.z);
+            return 0;
         }
 
         public global::UnityEngine.Vector3Int Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -1219,14 +1198,13 @@ namespace MessagePack.Unity
     public sealed class RangeIntFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.RangeInt>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.RangeInt value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.RangeInt value, global::MessagePack.IFormatterResolver formatterResolver)
         {
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 2);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, value.start);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, value.length);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 2);
+            MessagePackBinary.WriteInt32(target, value.start);
+            MessagePackBinary.WriteInt32(target, value.length);
+            return 0;
         }
 
         public global::UnityEngine.RangeInt Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -1275,16 +1253,15 @@ namespace MessagePack.Unity
     public sealed class RectIntFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.RectInt>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.RectInt value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.RectInt value, global::MessagePack.IFormatterResolver formatterResolver)
         {
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 4);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, value.x);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, value.y);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, value.width);
-            offset += MessagePackBinary.WriteInt32(ref bytes, offset, value.height);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 4);
+            MessagePackBinary.WriteInt32(target, value.x);
+            MessagePackBinary.WriteInt32(target, value.y);
+            MessagePackBinary.WriteInt32(target, value.width);
+            MessagePackBinary.WriteInt32(target, value.height);
+            return 0;
         }
 
         public global::UnityEngine.RectInt Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)
@@ -1343,14 +1320,13 @@ namespace MessagePack.Unity
     public sealed class BoundsIntFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::UnityEngine.BoundsInt>
     {
 
-        public int Serialize(ref byte[] bytes, int offset, global::UnityEngine.BoundsInt value, global::MessagePack.IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, global::UnityEngine.BoundsInt value, global::MessagePack.IFormatterResolver formatterResolver)
         {
 
-            var startOffset = offset;
-            offset += global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(ref bytes, offset, 2);
-            offset += formatterResolver.GetFormatterWithVerify<global::UnityEngine.Vector3Int>().Serialize(ref bytes, offset, value.position, formatterResolver);
-            offset += formatterResolver.GetFormatterWithVerify<global::UnityEngine.Vector3Int>().Serialize(ref bytes, offset, value.size, formatterResolver);
-            return offset - startOffset;
+            global::MessagePack.MessagePackBinary.WriteFixedArrayHeaderUnsafe(target, 2);
+            formatterResolver.GetFormatterWithVerify<global::UnityEngine.Vector3Int>().Serialize(target, value.position, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::UnityEngine.Vector3Int>().Serialize(target, value.size, formatterResolver);
+            return 0;
         }
 
         public global::UnityEngine.BoundsInt Deserialize(byte[] bytes, int offset, global::MessagePack.IFormatterResolver formatterResolver, out int readSize)

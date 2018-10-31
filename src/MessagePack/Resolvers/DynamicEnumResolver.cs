@@ -90,13 +90,12 @@ namespace MessagePack.Resolvers
             {
                 var method = typeBuilder.DefineMethod("Serialize", MethodAttributes.Public | MethodAttributes.Final | MethodAttributes.Virtual,
                     typeof(int),
-                    new Type[] { typeof(byte[]).MakeByRefType(), typeof(int), enumType, typeof(IFormatterResolver) });
+                    new Type[] { typeof(TargetBuffer), enumType, typeof(IFormatterResolver) });
 
                 var il = method.GetILGenerator();
                 il.Emit(OpCodes.Ldarg_1);
                 il.Emit(OpCodes.Ldarg_2);
-                il.Emit(OpCodes.Ldarg_3);
-                il.Emit(OpCodes.Call, typeof(MessagePackBinary).GetRuntimeMethod("Write" + underlyingType.Name, new[] { typeof(byte[]).MakeByRefType(), typeof(int), underlyingType }));
+                il.Emit(OpCodes.Call, typeof(MessagePackBinary).GetRuntimeMethod("Write" + underlyingType.Name, new[] { typeof(TargetBuffer), underlyingType }));
                 il.Emit(OpCodes.Ret);
             }
 

@@ -19,8 +19,8 @@ namespace MessagePack.Tests
         public void SerializeSimpleByteArray(int arrayLength)
         {
             var sourceBytes = Enumerable.Range(0, arrayLength).Select(i => unchecked((byte)i)).ToArray(); // long byte array
-            byte[] messagePackBytes = null;
-            var length = OldSpecBinaryFormatter.Instance.Serialize(ref messagePackBytes, 0, sourceBytes, StandardResolver.Instance);
+            int length = 0;
+            byte[] messagePackBytes = SerializeHelpers.SerializeToByte(x => length = OldSpecBinaryFormatter.Instance.Serialize(x, sourceBytes, StandardResolver.Instance));
             Assert.NotEmpty(messagePackBytes);
             Assert.Equal(length, messagePackBytes.Length);
 
@@ -32,8 +32,8 @@ namespace MessagePack.Tests
         public void SerializeNil()
         {
             byte[] sourceBytes = null;
-            byte[] messagePackBytes = null;
-            var length = OldSpecBinaryFormatter.Instance.Serialize(ref messagePackBytes, 0, sourceBytes, StandardResolver.Instance);
+            int length = 0;
+            byte[] messagePackBytes = SerializeHelpers.SerializeToByte(x => length = OldSpecBinaryFormatter.Instance.Serialize(x, sourceBytes, StandardResolver.Instance));
             Assert.NotEmpty(messagePackBytes);
             Assert.Equal(length, messagePackBytes.Length);
             Assert.Equal(MessagePackCode.Nil, messagePackBytes[0]); 

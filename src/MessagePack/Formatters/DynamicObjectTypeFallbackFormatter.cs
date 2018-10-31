@@ -1,5 +1,6 @@
 ﻿#if NETSTANDARD
 
+using MessagePack.Internal;
 using MessagePack.Resolvers;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace MessagePack.Formatters
 {
     public sealed class DynamicObjectTypeFallbackFormatter : IMessagePackFormatter<object>
     {
-        delegate int SerializeMethod(object dynamicFormatter, ref byte[] bytes, int offset, object value, IFormatterResolver formatterResolver);
+        delegate int SerializeMethod(object dynamicFormatter, TargetBuffer target, object value, IFormatterResolver formatterResolver);
 
         readonly MessagePack.Internal.ThreadsafeTypeKeyHashTable<KeyValuePair<object, SerializeMethod>> serializers = new Internal.ThreadsafeTypeKeyHashTable<KeyValuePair<object, SerializeMethod>>();
 
@@ -22,11 +23,11 @@ namespace MessagePack.Formatters
             this.innerResolvers = innerResolvers;
         }
 
-        public int Serialize(ref byte[] bytes, int offset, object value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, object value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
 
             var type = value.GetType();
@@ -35,7 +36,7 @@ namespace MessagePack.Formatters
             if (type == typeof(object))
             {
                 // serialize to empty map
-                return MessagePackBinary.WriteMapHeader(ref bytes, offset, 0);
+                return MessagePackBinary.WriteMapHeader(target, 0);
             }
 
             KeyValuePair<object, SerializeMethod> formatterAndDelegate;
@@ -60,22 +61,20 @@ namespace MessagePack.Formatters
                         {
                             var formatterType = typeof(IMessagePackFormatter<>).MakeGenericType(t);
                             var param0 = Expression.Parameter(typeof(object), "formatter");
-                            var param1 = Expression.Parameter(typeof(byte[]).MakeByRefType(), "bytes");
-                            var param2 = Expression.Parameter(typeof(int), "offset");
+                            var param1 = Expression.Parameter(typeof(TargetBuffer), "target");
                             var param3 = Expression.Parameter(typeof(object), "value");
                             var param4 = Expression.Parameter(typeof(IFormatterResolver), "formatterResolver");
 
-                            var serializeMethodInfo = formatterType.GetRuntimeMethod("Serialize", new[] { typeof(byte[]).MakeByRefType(), typeof(int), t, typeof(IFormatterResolver) });
+                            var serializeMethodInfo = formatterType.GetRuntimeMethod("Serialize", new[] { typeof(TargetBuffer), t, typeof(IFormatterResolver) });
 
                             var body = Expression.Call(
                                 Expression.Convert(param0, formatterType),
                                 serializeMethodInfo,
                                 param1,
-                                param2,
                                 ti.IsValueType ? Expression.Unbox(param3, t) : Expression.Convert(param3, t),
                                 param4);
 
-                            var lambda = Expression.Lambda<SerializeMethod>(body, param0, param1, param2, param3, param4).Compile();
+                            var lambda = Expression.Lambda<SerializeMethod>(body, param0, param1, param3, param4).Compile();
 
                             formatterAndDelegate = new KeyValuePair<object, SerializeMethod>(formatter, lambda);
                         }
@@ -85,7 +84,7 @@ namespace MessagePack.Formatters
                 }
             }
 
-            return formatterAndDelegate.Value(formatterAndDelegate.Key, ref bytes, offset, value, formatterResolver);
+            return formatterAndDelegate.Value(formatterAndDelegate.Key, target, value, formatterResolver);
         }
 
         public object Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)

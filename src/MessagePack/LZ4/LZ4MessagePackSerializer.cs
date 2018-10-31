@@ -76,11 +76,16 @@ namespace MessagePack
                 // write body
                 var lz4Length = LZ4Codec.Encode(serializedData.Array, serializedData.Offset, serializedData.Count, bytes, offset, bytes.Length - offset);
 
-                // write extension header(always 6 bytes)
-                extHeaderOffset += MessagePackBinary.WriteExtensionFormatHeaderForceExt32Block(ref bytes, extHeaderOffset, (sbyte)ExtensionTypeCode, lz4Length + 5);
+                using (var targetBuffer = new TargetBuffer())
+                {
+                    // write extension header(always 6 bytes)
+                    MessagePackBinary.WriteExtensionFormatHeaderForceExt32Block(targetBuffer, (sbyte)ExtensionTypeCode, lz4Length + 5);
 
-                // write length(always 5 bytes)
-                MessagePackBinary.WriteInt32ForceInt32Block(ref bytes, extHeaderOffset, serializedData.Count);
+                    // write length(always 5 bytes)
+                    MessagePackBinary.WriteInt32ForceInt32Block(targetBuffer, serializedData.Count);
+
+                    targetBuffer.WriteTo(ref bytes, extHeaderOffset);
+                }
 
                 return 6 + 5 + lz4Length;
             }
@@ -121,11 +126,16 @@ namespace MessagePack
                 // write body
                 var lz4Length = LZ4Codec.Encode(serializedData.Array, serializedData.Offset, serializedData.Count, buffer, offset, buffer.Length - offset);
 
-                // write extension header(always 6 bytes)
-                extHeaderOffset += MessagePackBinary.WriteExtensionFormatHeaderForceExt32Block(ref buffer, extHeaderOffset, (sbyte)ExtensionTypeCode, lz4Length + 5);
+                using (var targetBuffer = new TargetBuffer())
+                {
+                    // write extension header(always 6 bytes)
+                    MessagePackBinary.WriteExtensionFormatHeaderForceExt32Block(targetBuffer, (sbyte)ExtensionTypeCode, lz4Length + 5);
 
-                // write length(always 5 bytes)
-                MessagePackBinary.WriteInt32ForceInt32Block(ref buffer, extHeaderOffset, serializedData.Count);
+                    // write length(always 5 bytes)
+                    MessagePackBinary.WriteInt32ForceInt32Block(targetBuffer, serializedData.Count);
+
+                    targetBuffer.WriteTo(ref buffer, extHeaderOffset);
+                }
 
                 return new ArraySegment<byte>(buffer, 0, 6 + 5 + lz4Length);
             }

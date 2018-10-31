@@ -51,13 +51,16 @@ namespace MessagePack
         /// </summary>
         public static byte[] FromJson(TextReader reader)
         {
-            var offset = 0;
             byte[] binary = null;
             using (var jr = new TinyJsonReader(reader, false))
             {
-                FromJsonCore(jr, ref binary, ref offset);
+                using (var target = new TargetBuffer())
+                {
+                    FromJsonCore(jr, target);
+                    MessagePackBinary.FastResize(ref binary, target.TotalBytes);
+                    target.WriteTo(ref binary, 0);
+                }
             }
-            MessagePackBinary.FastResize(ref binary, offset);
             return binary;
         }
 
@@ -66,16 +69,22 @@ namespace MessagePack
         /// </summary>
         internal static ArraySegment<byte> FromJsonUnsafe(TextReader reader)
         {
-            var offset = 0;
+            var length = 0;
             byte[] binary = InternalMemoryPool.GetBuffer();  // from memory pool.
             using (var jr = new TinyJsonReader(reader, false))
             {
-                FromJsonCore(jr, ref binary, ref offset);
+                using (var target = new TargetBuffer())
+                {
+                    FromJsonCore(jr, target);
+                    MessagePackBinary.FastResize(ref binary, target.TotalBytes);
+                    length = target.TotalBytes;
+                    target.WriteTo(ref binary, 0);
+                }
             }
-            return new ArraySegment<byte>(binary, 0, offset);
+            return new ArraySegment<byte>(binary, 0, length);
         }
 
-        static uint FromJsonCore(TinyJsonReader jr, ref byte[] binary, ref int offset)
+        static uint FromJsonCore(TinyJsonReader jr, TargetBuffer target)
         {
             uint count = 0;
             while (jr.Read())
@@ -86,11 +95,13 @@ namespace MessagePack
                         break;
                     case TinyJsonToken.StartObject:
                         {
-                            var startOffset = offset;
-                            offset += 5;
-                            var mapCount = FromJsonCore(jr, ref binary, ref offset);
-                            mapCount = mapCount / 2; // remove propertyname string count.
-                            MessagePackBinary.WriteMapHeaderForceMap32Block(ref binary, startOffset, mapCount);
+                            using (var internalTarget = new TargetBuffer())
+                            {
+                                var mapCount = FromJsonCore(jr, internalTarget);
+                                mapCount = mapCount / 2; // remove propertyname string count.
+                                MessagePackBinary.WriteMapHeaderForceMap32Block(target, mapCount);
+                                target.Append(internalTarget);
+                            }
                             count++;
                             break;
                         }
@@ -98,10 +109,12 @@ namespace MessagePack
                         return count; // break
                     case TinyJsonToken.StartArray:
                         {
-                            var startOffset = offset;
-                            offset += 5;
-                            var arrayCount = FromJsonCore(jr, ref binary, ref offset);
-                            MessagePackBinary.WriteArrayHeaderForceArray32Block(ref binary, startOffset, arrayCount);
+                            using (var internalTarget = new TargetBuffer())
+                            {
+                                var arrayCount = FromJsonCore(jr, internalTarget);
+                                MessagePackBinary.WriteArrayHeaderForceArray32Block(target, arrayCount);
+                                target.Append(internalTarget);
+                            }
                             count++;
                             break;
                         }
@@ -111,36 +124,36 @@ namespace MessagePack
                         var v = jr.ValueType;
                         if (v == ValueType.Double)
                         {
-                            offset += MessagePackBinary.WriteDouble(ref binary, offset, jr.DoubleValue);
+                            MessagePackBinary.WriteDouble(target, jr.DoubleValue);
                         }
                         else if (v == ValueType.Long)
                         {
-                            offset += MessagePackBinary.WriteInt64(ref binary, offset, jr.LongValue);
+                            MessagePackBinary.WriteInt64(target, jr.LongValue);
                         }
                         else if (v == ValueType.ULong)
                         {
-                            offset += MessagePackBinary.WriteUInt64(ref binary, offset, jr.ULongValue);
+                            MessagePackBinary.WriteUInt64(target, jr.ULongValue);
                         }
                         else if (v == ValueType.Decimal)
                         {
-                            offset += DecimalFormatter.Instance.Serialize(ref binary, offset, jr.DecimalValue, null);
+                            DecimalFormatter.Instance.Serialize(target, jr.DecimalValue, null);
                         }
                         count++;
                         break;
                     case TinyJsonToken.String:
-                        offset += MessagePackBinary.WriteString(ref binary, offset, jr.StringValue);
+                        MessagePackBinary.WriteString(target, jr.StringValue);
                         count++;
                         break;
                     case TinyJsonToken.True:
-                        offset += MessagePackBinary.WriteBoolean(ref binary, offset, true);
+                        MessagePackBinary.WriteBoolean(target, true);
                         count++;
                         break;
                     case TinyJsonToken.False:
-                        offset += MessagePackBinary.WriteBoolean(ref binary, offset, false);
+                        MessagePackBinary.WriteBoolean(target, false);
                         count++;
                         break;
                     case TinyJsonToken.Null:
-                        offset += MessagePackBinary.WriteNil(ref binary, offset);
+                        MessagePackBinary.WriteNil(target);
                         count++;
                         break;
                     default:

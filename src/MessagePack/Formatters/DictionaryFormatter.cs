@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using MessagePack.Internal;
 
 #if NETSTANDARD
 using System.Collections.Concurrent;
@@ -16,15 +17,14 @@ namespace MessagePack.Formatters
         where TDictionary : IEnumerable<KeyValuePair<TKey, TValue>>
         where TEnumerator : IEnumerator<KeyValuePair<TKey, TValue>>
     {
-        public int Serialize(ref byte[] bytes, int offset, TDictionary value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, TDictionary value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
                 var keyFormatter = formatterResolver.GetFormatterWithVerify<TKey>();
                 var valueFormatter = formatterResolver.GetFormatterWithVerify<TValue>();
 
@@ -49,7 +49,7 @@ namespace MessagePack.Formatters
                     }
                 }
 
-                offset += MessagePackBinary.WriteMapHeader(ref bytes, offset, count);
+                MessagePackBinary.WriteMapHeader(target, count);
 
                 var e = GetSourceEnumerator(value);
                 try
@@ -57,8 +57,8 @@ namespace MessagePack.Formatters
                     while (e.MoveNext())
                     {
                         var item = e.Current;
-                        offset += keyFormatter.Serialize(ref bytes, offset, item.Key, formatterResolver);
-                        offset += valueFormatter.Serialize(ref bytes, offset, item.Value, formatterResolver);
+                        keyFormatter.Serialize(target, item.Key, formatterResolver);
+                        valueFormatter.Serialize(target, item.Value, formatterResolver);
                     }
                 }
                 finally
@@ -66,7 +66,7 @@ namespace MessagePack.Formatters
                     e.Dispose();
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -279,21 +279,20 @@ namespace MessagePack.Formatters
     public abstract class DictionaryFormatterBase<TKey, TValue, TIntermediate, TDictionary> : IMessagePackFormatter<TDictionary>
         where TDictionary : IDictionary<TKey, TValue>
     {
-        public int Serialize(ref byte[] bytes, int offset, TDictionary value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, TDictionary value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
                 var keyFormatter = formatterResolver.GetFormatterWithVerify<TKey>();
                 var valueFormatter = formatterResolver.GetFormatterWithVerify<TValue>();
 
                 var count = value.Count;
 
-                offset += MessagePackBinary.WriteMapHeader(ref bytes, offset, count);
+                offset += MessagePackBinary.WriteMapHeader(target, count);
 
                 var e = value.GetEnumerator();
                 try
@@ -301,8 +300,8 @@ namespace MessagePack.Formatters
                     while (e.MoveNext())
                     {
                         var item = e.Current;
-                        offset += keyFormatter.Serialize(ref bytes, offset, item.Key, formatterResolver);
-                        offset += valueFormatter.Serialize(ref bytes, offset, item.Value, formatterResolver);
+                        keyFormatter.Serialize(target, item.Key, formatterResolver);
+                        valueFormatter.Serialize(target, item.Value, formatterResolver);
                     }
                 }
                 finally
@@ -310,7 +309,7 @@ namespace MessagePack.Formatters
                     e.Dispose();
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 

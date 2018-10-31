@@ -1,10 +1,12 @@
-﻿namespace MessagePack.Formatters
+﻿using MessagePack.Internal;
+
+namespace MessagePack.Formatters
 {
     public sealed class IgnoreFormatter<T> : IMessagePackFormatter<T>
     {
-        public int Serialize(ref byte[] bytes, int offset, T value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, T value, IFormatterResolver formatterResolver)
         {
-            return MessagePackBinary.WriteNil(ref bytes, offset);
+            return MessagePackBinary.WriteNil(target);
         }
 
         public T Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)

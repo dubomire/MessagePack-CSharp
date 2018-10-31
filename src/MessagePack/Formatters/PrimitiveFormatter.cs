@@ -1,4 +1,5 @@
 ﻿using System;
+using MessagePack.Internal;
 
 namespace MessagePack.Formatters
 {
@@ -10,9 +11,9 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Int16 value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Int16 value, IFormatterResolver formatterResolver)
         {
-            return MessagePackBinary.WriteInt16(ref bytes, offset, value);
+            return MessagePackBinary.WriteInt16(target, value);
         }
 
         public Int16 Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -29,15 +30,15 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Int16? value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Int16? value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                return MessagePackBinary.WriteInt16(ref bytes, offset, value.Value);
+                return MessagePackBinary.WriteInt16(target, value.Value);
             }
         }
 
@@ -64,22 +65,21 @@ namespace MessagePack.Formatters
 
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Int16[] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Int16[] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
                 for (int i = 0; i < value.Length; i++)
                 {
-                    offset += MessagePackBinary.WriteInt16(ref bytes, offset, value[i]);
+                    MessagePackBinary.WriteInt16(target, value[i]);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -116,9 +116,9 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Int32 value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Int32 value, IFormatterResolver formatterResolver)
         {
-            return MessagePackBinary.WriteInt32(ref bytes, offset, value);
+            return MessagePackBinary.WriteInt32(target, value);
         }
 
         public Int32 Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -135,15 +135,15 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Int32? value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Int32? value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                return MessagePackBinary.WriteInt32(ref bytes, offset, value.Value);
+                return MessagePackBinary.WriteInt32(target, value.Value);
             }
         }
 
@@ -170,22 +170,21 @@ namespace MessagePack.Formatters
 
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Int32[] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Int32[] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
                 for (int i = 0; i < value.Length; i++)
                 {
-                    offset += MessagePackBinary.WriteInt32(ref bytes, offset, value[i]);
+                    MessagePackBinary.WriteInt32(target, value[i]);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -222,9 +221,9 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Int64 value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Int64 value, IFormatterResolver formatterResolver)
         {
-            return MessagePackBinary.WriteInt64(ref bytes, offset, value);
+            return MessagePackBinary.WriteInt64(target, value);
         }
 
         public Int64 Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -241,15 +240,15 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Int64? value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Int64? value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                return MessagePackBinary.WriteInt64(ref bytes, offset, value.Value);
+                return MessagePackBinary.WriteInt64(target, value.Value);
             }
         }
 
@@ -276,22 +275,21 @@ namespace MessagePack.Formatters
 
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Int64[] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Int64[] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
                 for (int i = 0; i < value.Length; i++)
                 {
-                    offset += MessagePackBinary.WriteInt64(ref bytes, offset, value[i]);
+                    MessagePackBinary.WriteInt64(target, value[i]);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -328,9 +326,9 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, UInt16 value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, UInt16 value, IFormatterResolver formatterResolver)
         {
-            return MessagePackBinary.WriteUInt16(ref bytes, offset, value);
+            return MessagePackBinary.WriteUInt16(target, value);
         }
 
         public UInt16 Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -347,15 +345,15 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, UInt16? value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, UInt16? value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                return MessagePackBinary.WriteUInt16(ref bytes, offset, value.Value);
+                return MessagePackBinary.WriteUInt16(target, value.Value);
             }
         }
 
@@ -382,22 +380,21 @@ namespace MessagePack.Formatters
 
         }
 
-        public int Serialize(ref byte[] bytes, int offset, UInt16[] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, UInt16[] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
                 for (int i = 0; i < value.Length; i++)
                 {
-                    offset += MessagePackBinary.WriteUInt16(ref bytes, offset, value[i]);
+                    MessagePackBinary.WriteUInt16(target, value[i]);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -434,9 +431,9 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, UInt32 value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, UInt32 value, IFormatterResolver formatterResolver)
         {
-            return MessagePackBinary.WriteUInt32(ref bytes, offset, value);
+            return MessagePackBinary.WriteUInt32(target, value);
         }
 
         public UInt32 Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -453,15 +450,15 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, UInt32? value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, UInt32? value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                return MessagePackBinary.WriteUInt32(ref bytes, offset, value.Value);
+                return MessagePackBinary.WriteUInt32(target, value.Value);
             }
         }
 
@@ -488,22 +485,21 @@ namespace MessagePack.Formatters
 
         }
 
-        public int Serialize(ref byte[] bytes, int offset, UInt32[] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, UInt32[] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
                 for (int i = 0; i < value.Length; i++)
                 {
-                    offset += MessagePackBinary.WriteUInt32(ref bytes, offset, value[i]);
+                    MessagePackBinary.WriteUInt32(target, value[i]);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -540,9 +536,9 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, UInt64 value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, UInt64 value, IFormatterResolver formatterResolver)
         {
-            return MessagePackBinary.WriteUInt64(ref bytes, offset, value);
+            return MessagePackBinary.WriteUInt64(target, value);
         }
 
         public UInt64 Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -559,15 +555,15 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, UInt64? value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, UInt64? value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                return MessagePackBinary.WriteUInt64(ref bytes, offset, value.Value);
+                return MessagePackBinary.WriteUInt64(target, value.Value);
             }
         }
 
@@ -594,22 +590,21 @@ namespace MessagePack.Formatters
 
         }
 
-        public int Serialize(ref byte[] bytes, int offset, UInt64[] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, UInt64[] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
                 for (int i = 0; i < value.Length; i++)
                 {
-                    offset += MessagePackBinary.WriteUInt64(ref bytes, offset, value[i]);
+                    MessagePackBinary.WriteUInt64(target, value[i]);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -646,9 +641,9 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Single value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Single value, IFormatterResolver formatterResolver)
         {
-            return MessagePackBinary.WriteSingle(ref bytes, offset, value);
+            return MessagePackBinary.WriteSingle(target, value);
         }
 
         public Single Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -665,15 +660,15 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Single? value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Single? value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                return MessagePackBinary.WriteSingle(ref bytes, offset, value.Value);
+                return MessagePackBinary.WriteSingle(target, value.Value);
             }
         }
 
@@ -700,22 +695,21 @@ namespace MessagePack.Formatters
 
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Single[] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Single[] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
                 for (int i = 0; i < value.Length; i++)
                 {
-                    offset += MessagePackBinary.WriteSingle(ref bytes, offset, value[i]);
+                    MessagePackBinary.WriteSingle(target, value[i]);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -752,9 +746,9 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Double value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Double value, IFormatterResolver formatterResolver)
         {
-            return MessagePackBinary.WriteDouble(ref bytes, offset, value);
+            return MessagePackBinary.WriteDouble(target, value);
         }
 
         public Double Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -771,15 +765,15 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Double? value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Double? value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                return MessagePackBinary.WriteDouble(ref bytes, offset, value.Value);
+                return MessagePackBinary.WriteDouble(target, value.Value);
             }
         }
 
@@ -806,22 +800,21 @@ namespace MessagePack.Formatters
 
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Double[] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Double[] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
                 for (int i = 0; i < value.Length; i++)
                 {
-                    offset += MessagePackBinary.WriteDouble(ref bytes, offset, value[i]);
+                    MessagePackBinary.WriteDouble(target, value[i]);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -858,9 +851,9 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Boolean value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Boolean value, IFormatterResolver formatterResolver)
         {
-            return MessagePackBinary.WriteBoolean(ref bytes, offset, value);
+            return MessagePackBinary.WriteBoolean(target, value);
         }
 
         public Boolean Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -877,15 +870,15 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Boolean? value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Boolean? value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                return MessagePackBinary.WriteBoolean(ref bytes, offset, value.Value);
+                return MessagePackBinary.WriteBoolean(target, value.Value);
             }
         }
 
@@ -912,22 +905,21 @@ namespace MessagePack.Formatters
 
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Boolean[] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Boolean[] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
                 for (int i = 0; i < value.Length; i++)
                 {
-                    offset += MessagePackBinary.WriteBoolean(ref bytes, offset, value[i]);
+                    MessagePackBinary.WriteBoolean(target, value[i]);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -964,9 +956,9 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Byte value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Byte value, IFormatterResolver formatterResolver)
         {
-            return MessagePackBinary.WriteByte(ref bytes, offset, value);
+            return MessagePackBinary.WriteByte(target, value);
         }
 
         public Byte Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -983,15 +975,15 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Byte? value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Byte? value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                return MessagePackBinary.WriteByte(ref bytes, offset, value.Value);
+                return MessagePackBinary.WriteByte(target, value.Value);
             }
         }
 
@@ -1018,9 +1010,9 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, SByte value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, SByte value, IFormatterResolver formatterResolver)
         {
-            return MessagePackBinary.WriteSByte(ref bytes, offset, value);
+            return MessagePackBinary.WriteSByte(target, value);
         }
 
         public SByte Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -1037,15 +1029,15 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, SByte? value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, SByte? value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                return MessagePackBinary.WriteSByte(ref bytes, offset, value.Value);
+                return MessagePackBinary.WriteSByte(target, value.Value);
             }
         }
 
@@ -1072,22 +1064,21 @@ namespace MessagePack.Formatters
 
         }
 
-        public int Serialize(ref byte[] bytes, int offset, SByte[] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, SByte[] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
                 for (int i = 0; i < value.Length; i++)
                 {
-                    offset += MessagePackBinary.WriteSByte(ref bytes, offset, value[i]);
+                    MessagePackBinary.WriteSByte(target, value[i]);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -1124,9 +1115,9 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Char value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Char value, IFormatterResolver formatterResolver)
         {
-            return MessagePackBinary.WriteChar(ref bytes, offset, value);
+            return MessagePackBinary.WriteChar(target, value);
         }
 
         public Char Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -1143,15 +1134,15 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Char? value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Char? value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                return MessagePackBinary.WriteChar(ref bytes, offset, value.Value);
+                return MessagePackBinary.WriteChar(target, value.Value);
             }
         }
 
@@ -1178,22 +1169,21 @@ namespace MessagePack.Formatters
 
         }
 
-        public int Serialize(ref byte[] bytes, int offset, Char[] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, Char[] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
                 for (int i = 0; i < value.Length; i++)
                 {
-                    offset += MessagePackBinary.WriteChar(ref bytes, offset, value[i]);
+                    MessagePackBinary.WriteChar(target, value[i]);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -1230,9 +1220,9 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, DateTime value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, DateTime value, IFormatterResolver formatterResolver)
         {
-            return MessagePackBinary.WriteDateTime(ref bytes, offset, value);
+            return MessagePackBinary.WriteDateTime(target, value);
         }
 
         public DateTime Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)
@@ -1249,15 +1239,15 @@ namespace MessagePack.Formatters
         {
         }
 
-        public int Serialize(ref byte[] bytes, int offset, DateTime? value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, DateTime? value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                return MessagePackBinary.WriteDateTime(ref bytes, offset, value.Value);
+                return MessagePackBinary.WriteDateTime(target, value.Value);
             }
         }
 
@@ -1284,22 +1274,21 @@ namespace MessagePack.Formatters
 
         }
 
-        public int Serialize(ref byte[] bytes, int offset, DateTime[] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, DateTime[] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
-                var startOffset = offset;
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
                 for (int i = 0; i < value.Length; i++)
                 {
-                    offset += MessagePackBinary.WriteDateTime(ref bytes, offset, value[i]);
+                    MessagePackBinary.WriteDateTime(target, value[i]);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 

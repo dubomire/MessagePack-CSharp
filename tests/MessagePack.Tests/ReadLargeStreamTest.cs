@@ -13,20 +13,28 @@ namespace MessagePack.Tests
         [Fact]
         public void Large()
         {
-            var bytesA = new byte[131066];
-            var bytesB = new byte[31072];
-            var bytesC = new byte[131066];
-            for (int i = 0; i < bytesA.Length; i++)
-            {
-                bytesA[i] = 1;
-                // bytesB[i] = 1;
-                bytesC[i] = 1;
-            }
+            byte[][] allArrays = new byte[99][];
+            for (int j = 0; j < 33; j++)
+      {
+        var bytesA = new byte[1310660];
+        var bytesB = new byte[31072];
+        var bytesC = new byte[1310660];
+        for (int i = 0; i < bytesA.Length; i++)
+        {
+          bytesA[i] = 1;
+          // bytesB[i] = 1;
+          bytesC[i] = 1;
+        }
+        allArrays[j * 3] = bytesA;
+        allArrays[j * 3 + 1] = bytesB;
+        allArrays[j * 3 + 2] = bytesC;
+      }
 
-            var bin = MessagePackSerializer.Serialize(new[] { bytesA, bytesB, bytesC });
+      var bin = MessagePackSerializer.Serialize(allArrays);
+      Console.WriteLine("Total length: {0}", bin.Length);
             var ms = new MemoryStream(bin, 0, bin.Length, false, false);
 
-            var foo = MessagePackSerializer.Deserialize<byte[][]>(ms, true);
+            var foo = MessagePackSerializer.Deserialize<byte[][]>(ms, false);
 
             for (int i = 0; i < foo[0].Length; i++)
             {

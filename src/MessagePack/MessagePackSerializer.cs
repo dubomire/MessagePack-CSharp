@@ -63,12 +63,12 @@ namespace MessagePack
             if (resolver == null) resolver = DefaultResolver;
             var formatter = resolver.GetFormatterWithVerify<T>();
 
-            var buffer = InternalMemoryPool.GetBuffer();
+            using (var target = new TargetBuffer())
+            {
+                formatter.Serialize(target, obj, resolver);
 
-            var len = formatter.Serialize(ref buffer, 0, obj, resolver);
-
-            // do not return MemoryPool.Buffer.
-            return MessagePackBinary.FastCloneWithResize(buffer, len);
+                return MessagePackBinary.FastCloneWithResize(target);
+            }
         }
 
         /// <summary>
@@ -87,12 +87,12 @@ namespace MessagePack
             if (resolver == null) resolver = DefaultResolver;
             var formatter = resolver.GetFormatterWithVerify<T>();
 
-            var buffer = InternalMemoryPool.GetBuffer();
+            using (var target = new TargetBuffer())
+            {
+                formatter.Serialize(target, obj, resolver);
 
-            var len = formatter.Serialize(ref buffer, 0, obj, resolver);
-
-            // return raw memory pool, unsafe!
-            return new ArraySegment<byte>(buffer, 0, len);
+                return new ArraySegment<byte>(MessagePackBinary.FastCloneWithResize(target));
+            }
         }
 
         /// <summary>
@@ -111,20 +111,20 @@ namespace MessagePack
             if (resolver == null) resolver = DefaultResolver;
             var formatter = resolver.GetFormatterWithVerify<T>();
 
-            var buffer = InternalMemoryPool.GetBuffer();
+            using (var target = new TargetBuffer())
+            {
+                formatter.Serialize(target, obj, resolver);
 
-            var len = formatter.Serialize(ref buffer, 0, obj, resolver);
-
-            // do not need resize.
-            stream.Write(buffer, 0, len);
+                target.WriteTo(stream);
+            }
         }
 
         /// <summary>
         /// Reflect of resolver.GetFormatterWithVerify[T].Serialize.
         /// </summary>
-        public static int Serialize<T>(ref byte[] bytes, int offset, T value, IFormatterResolver resolver)
+        public static int Serialize<T>(TargetBuffer target, T value, IFormatterResolver resolver)
         {
-            return resolver.GetFormatterWithVerify<T>().Serialize(ref bytes, offset, value, resolver);
+            return resolver.GetFormatterWithVerify<T>().Serialize(target, value, resolver);
         }
 
 #if NETSTANDARD
@@ -145,18 +145,11 @@ namespace MessagePack
             if (resolver == null) resolver = DefaultResolver;
             var formatter = resolver.GetFormatterWithVerify<T>();
 
-            var rentBuffer = BufferPool.Default.Rent();
-            try
+            using (var target = new TargetBuffer())
             {
-                var buffer = rentBuffer;
-                var len = formatter.Serialize(ref buffer, 0, obj, resolver);
+                formatter.Serialize(target, obj, resolver);
 
-                // do not need resize.
-                await stream.WriteAsync(buffer, 0, len).ConfigureAwait(false);
-            }
-            finally
-            {
-                BufferPool.Default.Return(rentBuffer);
+                await target.WriteToAsync(stream).ConfigureAwait(false);
             }
         }
 
@@ -229,12 +222,23 @@ namespace MessagePack
 
                 // no else.
                 {
-                    var buffer = InternalMemoryPool.GetBuffer();
+                    byte[] buffer = null;
+                    try
+                    {
+                        buffer = BufferPool.Default.Rent(stream.CanSeek ? (int)stream.Length + 1 : 65536);
 
-                    FillFromStream(stream, ref buffer);
+                        FillFromStream(stream, ref buffer);
 
-                    int readSize;
-                    return formatter.Deserialize(buffer, 0, resolver, out readSize);
+                        int readSize;
+                        return formatter.Deserialize(buffer, 0, resolver, out readSize);
+                    }
+                    finally
+                    {
+                        if (buffer != null)
+                        {
+                            BufferPool.Default.Return(buffer);
+                        }
+                    }
                 }
             }
             else
@@ -265,8 +269,7 @@ namespace MessagePack
 
         public static async System.Threading.Tasks.Task<T> DeserializeAsync<T>(Stream stream, IFormatterResolver resolver)
         {
-            var rentBuffer = BufferPool.Default.Rent();
-            var buf = rentBuffer;
+            var buf = BufferPool.Default.Rent(65535);
             try
             {
                 int length = 0;
@@ -276,7 +279,7 @@ namespace MessagePack
                     length += read;
                     if (length == buf.Length)
                     {
-                        MessagePackBinary.FastResize(ref buf, length * 2);
+                        BufferPool.Resize(ref buf, length * 2);
                     }
                 }
 
@@ -284,7 +287,7 @@ namespace MessagePack
             }
             finally
             {
-                BufferPool.Default.Return(rentBuffer);
+                BufferPool.Default.Return(buf);
             }
         }
 
@@ -299,7 +302,7 @@ namespace MessagePack
                 length += read;
                 if (length == buffer.Length)
                 {
-                    MessagePackBinary.FastResize(ref buffer, length * 2);
+                    BufferPool.Resize(ref buffer, length * 2);
                 }
             }
 

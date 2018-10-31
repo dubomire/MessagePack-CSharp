@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MessagePack.Internal;
 
 namespace MessagePack.Formatters
 {
@@ -10,31 +11,30 @@ namespace MessagePack.Formatters
     {
         const int ArrayLength = 3;
 
-        public int Serialize(ref byte[] bytes, int offset, T[,] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, T[,] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
                 var i = value.GetLength(0);
                 var j = value.GetLength(1);
 
-                var startOffset = offset;
                 var formatter = formatterResolver.GetFormatterWithVerify<T>();
 
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, ArrayLength);
-                offset += MessagePackBinary.WriteInt32(ref bytes, offset, i);
-                offset += MessagePackBinary.WriteInt32(ref bytes, offset, j);
+                MessagePackBinary.WriteArrayHeader(target, ArrayLength);
+                MessagePackBinary.WriteInt32(target, i);
+                MessagePackBinary.WriteInt32(target, j);
 
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
                 foreach (var item in value)
                 {
-                    offset += formatter.Serialize(ref bytes, offset, item, formatterResolver);
+                    formatter.Serialize(target, item, formatterResolver);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -93,11 +93,11 @@ namespace MessagePack.Formatters
     {
         const int ArrayLength = 4;
 
-        public int Serialize(ref byte[] bytes, int offset, T[,,] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, T[,,] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
@@ -105,21 +105,20 @@ namespace MessagePack.Formatters
                 var j = value.GetLength(1);
                 var k = value.GetLength(2);
 
-                var startOffset = offset;
                 var formatter = formatterResolver.GetFormatterWithVerify<T>();
 
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, ArrayLength);
-                offset += MessagePackBinary.WriteInt32(ref bytes, offset, i);
-                offset += MessagePackBinary.WriteInt32(ref bytes, offset, j);
-                offset += MessagePackBinary.WriteInt32(ref bytes, offset, k);
+                MessagePackBinary.WriteArrayHeader(target, ArrayLength);
+                MessagePackBinary.WriteInt32(target, i);
+                MessagePackBinary.WriteInt32(target, j);
+                MessagePackBinary.WriteInt32(target, k);
 
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
                 foreach (var item in value)
                 {
-                    offset += formatter.Serialize(ref bytes, offset, item, formatterResolver);
+                    formatter.Serialize(target, item, formatterResolver);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 
@@ -188,11 +187,11 @@ namespace MessagePack.Formatters
     {
         const int ArrayLength = 5;
 
-        public int Serialize(ref byte[] bytes, int offset, T[,,,] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, T[,,,] value, IFormatterResolver formatterResolver)
         {
             if (value == null)
             {
-                return MessagePackBinary.WriteNil(ref bytes, offset);
+                return MessagePackBinary.WriteNil(target);
             }
             else
             {
@@ -201,22 +200,21 @@ namespace MessagePack.Formatters
                 var k = value.GetLength(2);
                 var l = value.GetLength(3);
 
-                var startOffset = offset;
                 var formatter = formatterResolver.GetFormatterWithVerify<T>();
 
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, ArrayLength);
-                offset += MessagePackBinary.WriteInt32(ref bytes, offset, i);
-                offset += MessagePackBinary.WriteInt32(ref bytes, offset, j);
-                offset += MessagePackBinary.WriteInt32(ref bytes, offset, k);
-                offset += MessagePackBinary.WriteInt32(ref bytes, offset, l);
+                MessagePackBinary.WriteArrayHeader(target, ArrayLength);
+                MessagePackBinary.WriteInt32(target, i);
+                MessagePackBinary.WriteInt32(target, j);
+                MessagePackBinary.WriteInt32(target, k);
+                MessagePackBinary.WriteInt32(target, l);
 
-                offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, value.Length);
+                MessagePackBinary.WriteArrayHeader(target, value.Length);
                 foreach (var item in value)
                 {
-                    offset += formatter.Serialize(ref bytes, offset, item, formatterResolver);
+                    formatter.Serialize(target, item, formatterResolver);
                 }
 
-                return offset - startOffset;
+                return 0;
             }
         }
 

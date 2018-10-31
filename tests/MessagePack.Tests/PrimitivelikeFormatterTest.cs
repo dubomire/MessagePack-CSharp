@@ -1,4 +1,5 @@
 ﻿using MessagePack.Formatters;
+using MessagePack.Internal;
 using MessagePack.Resolvers;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace MessagePack.Tests
             throw new NotImplementedException();
         }
 
-        public int Serialize(ref byte[] bytes, int offset, string value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, string value, IFormatterResolver formatterResolver)
         {
             throw new NotImplementedException();
         }
@@ -40,7 +41,7 @@ namespace MessagePack.Tests
             throw new NotImplementedException();
         }
 
-        public int Serialize(ref byte[] bytes, int offset, DateTime value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, DateTime value, IFormatterResolver formatterResolver)
         {
             throw new NotImplementedException();
         }
@@ -53,7 +54,7 @@ namespace MessagePack.Tests
             throw new NotImplementedException();
         }
 
-        public int Serialize(ref byte[] bytes, int offset, byte[] value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, byte[] value, IFormatterResolver formatterResolver)
         {
             throw new NotImplementedException();
         }

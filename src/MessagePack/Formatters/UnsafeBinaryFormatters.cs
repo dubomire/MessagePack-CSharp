@@ -1,6 +1,7 @@
 ﻿#if NETSTANDARD
 
 using System;
+using MessagePack.Internal;
 
 namespace MessagePack.Formatters
 {
@@ -18,11 +19,11 @@ namespace MessagePack.Formatters
         // Guid's underlying _a,...,_k field is sequential and same layuout as .NET Framework and Mono(Unity).
         // But target machines must be same endian so restrict only for little endian.
 
-        public unsafe int Serialize(ref byte[] bytes, int offset, Guid value, IFormatterResolver formatterResolver)
+        public unsafe int Serialize(TargetBuffer target, Guid value, IFormatterResolver formatterResolver)
         {
             if (!BitConverter.IsLittleEndian) throw new Exception("BinaryGuidFormatter only allows on little endian env.");
 
-            MessagePackBinary.EnsureCapacity(ref bytes, offset, 18);
+            target.ReserveAndCommit(18, out byte[] bytes, out int offset);
             fixed (byte* dst = &bytes[offset])
             {
                 var src = &value;
@@ -77,11 +78,11 @@ namespace MessagePack.Formatters
         // decimal underlying "flags, hi, lo, mid" fields are sequential and same layuout with .NET Framework and Mono(Unity)
         // But target machines must be same endian so restrict only for little endian.
 
-        public unsafe int Serialize(ref byte[] bytes, int offset, Decimal value, IFormatterResolver formatterResolver)
+        public unsafe int Serialize(TargetBuffer target, Decimal value, IFormatterResolver formatterResolver)
         {
             if (!BitConverter.IsLittleEndian) throw new Exception("BinaryGuidFormatter only allows on little endian env.");
 
-            MessagePackBinary.EnsureCapacity(ref bytes, offset, 18);
+            target.ReserveAndCommit(18, out byte[] bytes, out int offset);
             fixed (byte* dst = &bytes[offset])
             {
                 var src = &value;

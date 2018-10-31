@@ -147,16 +147,16 @@ namespace MessagePack.Resolvers
             }
         }
 
-        public int Serialize(ref byte[] bytes, int offset, T value, IFormatterResolver formatterResolver)
+        public int Serialize(TargetBuffer target, T value, IFormatterResolver formatterResolver)
         {
             // reduce generic method size, avoid write code in <T> type.
             if (metaInfo.IsIntKey)
             {
-                return ReflectionObjectFormatterHelper.WriteArraySerialize(metaInfo, writeMembers, ref bytes, offset, value, formatterResolver);
+                return ReflectionObjectFormatterHelper.WriteArraySerialize(metaInfo, writeMembers, target, value, formatterResolver);
             }
             else
             {
-                return ReflectionObjectFormatterHelper.WriteMapSerialize(metaInfo, writeMembers, writeMemberNames, ref bytes, offset, value, formatterResolver);
+                return ReflectionObjectFormatterHelper.WriteMapSerialize(metaInfo, writeMembers, writeMemberNames, target, value, formatterResolver);
             }
         }
 
@@ -168,41 +168,37 @@ namespace MessagePack.Resolvers
 
     internal static class ReflectionObjectFormatterHelper
     {
-        internal static int WriteArraySerialize(ObjectSerializationInfo metaInfo, ObjectSerializationInfo.EmittableMember[] writeMembers, ref byte[] bytes, int offset, object value, IFormatterResolver formatterResolver)
+        internal static int WriteArraySerialize(ObjectSerializationInfo metaInfo, ObjectSerializationInfo.EmittableMember[] writeMembers, TargetBuffer target, object value, IFormatterResolver formatterResolver)
         {
-            var startOffset = offset;
-
-            offset += MessagePackBinary.WriteArrayHeader(ref bytes, offset, writeMembers.Length);
+            MessagePackBinary.WriteArrayHeader(target, writeMembers.Length);
             foreach (var item in metaInfo.Members)
             {
                 if (item == null)
                 {
-                    offset += MessagePackBinary.WriteNil(ref bytes, offset);
+                    MessagePackBinary.WriteNil(target);
                 }
                 else
                 {
                     var memberValue = item.ReflectionLoadValue(value);
-                    offset += MessagePackSerializer.NonGeneric.Serialize(item.Type, ref bytes, offset, memberValue, formatterResolver);
+                    MessagePackSerializer.NonGeneric.Serialize(item.Type, target, memberValue, formatterResolver);
                 }
             }
 
-            return offset - startOffset;
+            return 0;
         }
 
-        internal static int WriteMapSerialize(ObjectSerializationInfo metaInfo, ObjectSerializationInfo.EmittableMember[] writeMembers, byte[][] memberNames, ref byte[] bytes, int offset, object value, IFormatterResolver formatterResolver)
+        internal static int WriteMapSerialize(ObjectSerializationInfo metaInfo, ObjectSerializationInfo.EmittableMember[] writeMembers, byte[][] memberNames, TargetBuffer target, object value, IFormatterResolver formatterResolver)
         {
-            var startOffset = offset;
-
-            offset += MessagePackBinary.WriteMapHeader(ref bytes, offset, writeMembers.Length);
+            MessagePackBinary.WriteMapHeader(target, writeMembers.Length);
 
             for (int i = 0; i < writeMembers.Length; i++)
             {
-                offset += MessagePackBinary.WriteStringBytes(ref bytes, offset, memberNames[i]);
+                MessagePackBinary.WriteStringBytes(target, memberNames[i]);
                 var memberValue = writeMembers[i].ReflectionLoadValue(value);
-                offset += MessagePackSerializer.NonGeneric.Serialize(writeMembers[i].Type, ref bytes, offset, memberValue, formatterResolver);
+                MessagePackSerializer.NonGeneric.Serialize(writeMembers[i].Type, target, memberValue, formatterResolver);
             }
 
-            return offset - startOffset;
+            return 0;
         }
 
         internal static object Deserialize(ObjectSerializationInfo metaInfo, ObjectSerializationInfo.EmittableMember[] readMembers, int[] constructorParameterIndexes, AutomataDictionary mapMemberDictionary, byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize)

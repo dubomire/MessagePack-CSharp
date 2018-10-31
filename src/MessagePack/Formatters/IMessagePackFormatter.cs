@@ -1,4 +1,6 @@
 ﻿
+using MessagePack.Internal;
+
 namespace MessagePack.Formatters
 {
     // marker
@@ -9,7 +11,7 @@ namespace MessagePack.Formatters
 
     public interface IMessagePackFormatter<T> : IMessagePackFormatter
     {
-        int Serialize(ref byte[] bytes, int offset, T value, IFormatterResolver formatterResolver);
+        int Serialize(TargetBuffer target, T value, IFormatterResolver formatterResolver);
         T Deserialize(byte[] bytes, int offset, IFormatterResolver formatterResolver, out int readSize);
     }
 }

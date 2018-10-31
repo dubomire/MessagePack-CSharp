@@ -341,6 +341,17 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
+        public static byte[] FastCloneWithResize(TargetBuffer target)
+        {
+            byte[] array = new byte[target.TotalBytes];
+            target.WriteTo(ref array, 0);
+            return array;
+        }
+
+
+#if NETSTANDARD
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
         public static MessagePackType GetMessagePackType(byte[] bytes, int offset)
         {
             return MessagePackCode.ToMessagePackType(bytes[offset]);
@@ -402,9 +413,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteNil(ref byte[] bytes, int offset)
+        public static int WriteNil(TargetBuffer target)
         {
-            EnsureCapacity(ref bytes, offset, 1);
+            target.ReserveAndCommit(1, out byte[] bytes, out int offset);
 
             bytes[offset] = MessagePackCode.Nil;
             return 1;
@@ -434,109 +445,108 @@ namespace MessagePack
             return bytes[offset] == MessagePackCode.Nil;
         }
 
-        public static int WriteRaw(ref byte[] bytes, int offset, byte[] rawMessagePackBlock)
+        public static int WriteRaw(TargetBuffer target, byte[] rawMessagePackBlock)
         {
-            EnsureCapacity(ref bytes, offset, rawMessagePackBlock.Length);
-
 #if NETSTANDARD
             if (UnsafeMemory.Is32Bit)
             {
                 switch (rawMessagePackBlock.Length)
                 {
                     case 1:
-                        UnsafeMemory32.WriteRaw1(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw1(target, rawMessagePackBlock);
                         break;
                     case 2:
-                        UnsafeMemory32.WriteRaw2(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw2(target, rawMessagePackBlock);
                         break;
                     case 3:
-                        UnsafeMemory32.WriteRaw3(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw3(target, rawMessagePackBlock);
                         break;
                     case 4:
-                        UnsafeMemory32.WriteRaw4(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw4(target, rawMessagePackBlock);
                         break;
                     case 5:
-                        UnsafeMemory32.WriteRaw5(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw5(target, rawMessagePackBlock);
                         break;
                     case 6:
-                        UnsafeMemory32.WriteRaw6(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw6(target, rawMessagePackBlock);
                         break;
                     case 7:
-                        UnsafeMemory32.WriteRaw7(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw7(target, rawMessagePackBlock);
                         break;
                     case 8:
-                        UnsafeMemory32.WriteRaw8(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw8(target, rawMessagePackBlock);
                         break;
                     case 9:
-                        UnsafeMemory32.WriteRaw9(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw9(target, rawMessagePackBlock);
                         break;
                     case 10:
-                        UnsafeMemory32.WriteRaw10(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw10(target, rawMessagePackBlock);
                         break;
                     case 11:
-                        UnsafeMemory32.WriteRaw11(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw11(target, rawMessagePackBlock);
                         break;
                     case 12:
-                        UnsafeMemory32.WriteRaw12(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw12(target, rawMessagePackBlock);
                         break;
                     case 13:
-                        UnsafeMemory32.WriteRaw13(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw13(target, rawMessagePackBlock);
                         break;
                     case 14:
-                        UnsafeMemory32.WriteRaw14(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw14(target, rawMessagePackBlock);
                         break;
                     case 15:
-                        UnsafeMemory32.WriteRaw15(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw15(target, rawMessagePackBlock);
                         break;
                     case 16:
-                        UnsafeMemory32.WriteRaw16(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw16(target, rawMessagePackBlock);
                         break;
                     case 17:
-                        UnsafeMemory32.WriteRaw17(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw17(target, rawMessagePackBlock);
                         break;
                     case 18:
-                        UnsafeMemory32.WriteRaw18(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw18(target, rawMessagePackBlock);
                         break;
                     case 19:
-                        UnsafeMemory32.WriteRaw19(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw19(target, rawMessagePackBlock);
                         break;
                     case 20:
-                        UnsafeMemory32.WriteRaw20(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw20(target, rawMessagePackBlock);
                         break;
                     case 21:
-                        UnsafeMemory32.WriteRaw21(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw21(target, rawMessagePackBlock);
                         break;
                     case 22:
-                        UnsafeMemory32.WriteRaw22(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw22(target, rawMessagePackBlock);
                         break;
                     case 23:
-                        UnsafeMemory32.WriteRaw23(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw23(target, rawMessagePackBlock);
                         break;
                     case 24:
-                        UnsafeMemory32.WriteRaw24(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw24(target, rawMessagePackBlock);
                         break;
                     case 25:
-                        UnsafeMemory32.WriteRaw25(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw25(target, rawMessagePackBlock);
                         break;
                     case 26:
-                        UnsafeMemory32.WriteRaw26(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw26(target, rawMessagePackBlock);
                         break;
                     case 27:
-                        UnsafeMemory32.WriteRaw27(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw27(target, rawMessagePackBlock);
                         break;
                     case 28:
-                        UnsafeMemory32.WriteRaw28(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw28(target, rawMessagePackBlock);
                         break;
                     case 29:
-                        UnsafeMemory32.WriteRaw29(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw29(target, rawMessagePackBlock);
                         break;
                     case 30:
-                        UnsafeMemory32.WriteRaw30(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw30(target, rawMessagePackBlock);
                         break;
                     case 31:
-                        UnsafeMemory32.WriteRaw31(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory32.WriteRaw31(target, rawMessagePackBlock);
                         break;
                     default:
+                        target.ReserveAndCommit(rawMessagePackBlock.Length, out byte[] bytes, out int offset);
                         Buffer.BlockCopy(rawMessagePackBlock, 0, bytes, offset, rawMessagePackBlock.Length);
                         break;
                 }
@@ -546,104 +556,106 @@ namespace MessagePack
                 switch (rawMessagePackBlock.Length)
                 {
                     case 1:
-                        UnsafeMemory64.WriteRaw1(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw1(target, rawMessagePackBlock);
                         break;
                     case 2:
-                        UnsafeMemory64.WriteRaw2(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw2(target, rawMessagePackBlock);
                         break;
                     case 3:
-                        UnsafeMemory64.WriteRaw3(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw3(target, rawMessagePackBlock);
                         break;
                     case 4:
-                        UnsafeMemory64.WriteRaw4(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw4(target, rawMessagePackBlock);
                         break;
                     case 5:
-                        UnsafeMemory64.WriteRaw5(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw5(target, rawMessagePackBlock);
                         break;
                     case 6:
-                        UnsafeMemory64.WriteRaw6(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw6(target, rawMessagePackBlock);
                         break;
                     case 7:
-                        UnsafeMemory64.WriteRaw7(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw7(target, rawMessagePackBlock);
                         break;
                     case 8:
-                        UnsafeMemory64.WriteRaw8(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw8(target, rawMessagePackBlock);
                         break;
                     case 9:
-                        UnsafeMemory64.WriteRaw9(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw9(target, rawMessagePackBlock);
                         break;
                     case 10:
-                        UnsafeMemory64.WriteRaw10(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw10(target, rawMessagePackBlock);
                         break;
                     case 11:
-                        UnsafeMemory64.WriteRaw11(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw11(target, rawMessagePackBlock);
                         break;
                     case 12:
-                        UnsafeMemory64.WriteRaw12(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw12(target, rawMessagePackBlock);
                         break;
                     case 13:
-                        UnsafeMemory64.WriteRaw13(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw13(target, rawMessagePackBlock);
                         break;
                     case 14:
-                        UnsafeMemory64.WriteRaw14(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw14(target, rawMessagePackBlock);
                         break;
                     case 15:
-                        UnsafeMemory64.WriteRaw15(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw15(target, rawMessagePackBlock);
                         break;
                     case 16:
-                        UnsafeMemory64.WriteRaw16(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw16(target, rawMessagePackBlock);
                         break;
                     case 17:
-                        UnsafeMemory64.WriteRaw17(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw17(target, rawMessagePackBlock);
                         break;
                     case 18:
-                        UnsafeMemory64.WriteRaw18(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw18(target, rawMessagePackBlock);
                         break;
                     case 19:
-                        UnsafeMemory64.WriteRaw19(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw19(target, rawMessagePackBlock);
                         break;
                     case 20:
-                        UnsafeMemory64.WriteRaw20(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw20(target, rawMessagePackBlock);
                         break;
                     case 21:
-                        UnsafeMemory64.WriteRaw21(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw21(target, rawMessagePackBlock);
                         break;
                     case 22:
-                        UnsafeMemory64.WriteRaw22(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw22(target, rawMessagePackBlock);
                         break;
                     case 23:
-                        UnsafeMemory64.WriteRaw23(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw23(target, rawMessagePackBlock);
                         break;
                     case 24:
-                        UnsafeMemory64.WriteRaw24(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw24(target, rawMessagePackBlock);
                         break;
                     case 25:
-                        UnsafeMemory64.WriteRaw25(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw25(target, rawMessagePackBlock);
                         break;
                     case 26:
-                        UnsafeMemory64.WriteRaw26(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw26(target, rawMessagePackBlock);
                         break;
                     case 27:
-                        UnsafeMemory64.WriteRaw27(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw27(target, rawMessagePackBlock);
                         break;
                     case 28:
-                        UnsafeMemory64.WriteRaw28(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw28(target, rawMessagePackBlock);
                         break;
                     case 29:
-                        UnsafeMemory64.WriteRaw29(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw29(target, rawMessagePackBlock);
                         break;
                     case 30:
-                        UnsafeMemory64.WriteRaw30(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw30(target, rawMessagePackBlock);
                         break;
                     case 31:
-                        UnsafeMemory64.WriteRaw31(ref bytes, offset, rawMessagePackBlock);
+                        UnsafeMemory64.WriteRaw31(target, rawMessagePackBlock);
                         break;
                     default:
+                        target.ReserveAndCommit(rawMessagePackBlock.Length, out byte[] bytes, out int offset);
                         Buffer.BlockCopy(rawMessagePackBlock, 0, bytes, offset, rawMessagePackBlock.Length);
                         break;
                 }
             }
 #else
+            target.ReserveAndCommit(rawMessagePackBlock.Length, out byte[] bytes, out int offset);
             Buffer.BlockCopy(rawMessagePackBlock, 0, bytes, offset, rawMessagePackBlock.Length);
 #endif
             return rawMessagePackBlock.Length;
@@ -656,9 +668,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteFixedMapHeaderUnsafe(ref byte[] bytes, int offset, int count)
+        public static int WriteFixedMapHeaderUnsafe(TargetBuffer target, int count)
         {
-            EnsureCapacity(ref bytes, offset, 1);
+            target.ReserveAndCommit(1, out byte[] bytes, out int offset);
             bytes[offset] = (byte)(MessagePackCode.MinFixMap | count);
             return 1;
         }
@@ -669,11 +681,11 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteMapHeader(ref byte[] bytes, int offset, int count)
+        public static int WriteMapHeader(TargetBuffer target, int count)
         {
             checked
             {
-                return WriteMapHeader(ref bytes, offset, (uint)count);
+                return WriteMapHeader(target, (uint)count);
             }
         }
 
@@ -683,17 +695,17 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteMapHeader(ref byte[] bytes, int offset, uint count)
+        public static int WriteMapHeader(TargetBuffer target, uint count)
         {
             if (count <= MessagePackRange.MaxFixMapCount)
             {
-                EnsureCapacity(ref bytes, offset, 1);
+                target.ReserveAndCommit(1, out byte[] bytes, out int offset);
                 bytes[offset] = (byte)(MessagePackCode.MinFixMap | count);
                 return 1;
             }
             else if (count <= ushort.MaxValue)
             {
-                EnsureCapacity(ref bytes, offset, 3);
+                target.ReserveAndCommit(3, out byte[] bytes, out int offset);
                 unchecked
                 {
                     bytes[offset] = MessagePackCode.Map16;
@@ -704,7 +716,7 @@ namespace MessagePack
             }
             else
             {
-                EnsureCapacity(ref bytes, offset, 5);
+                target.ReserveAndCommit(5, out byte[] bytes, out int offset);
                 unchecked
                 {
                     bytes[offset] = MessagePackCode.Map32;
@@ -723,9 +735,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteMapHeaderForceMap32Block(ref byte[] bytes, int offset, uint count)
+        public static int WriteMapHeaderForceMap32Block(TargetBuffer target, uint count)
         {
-            EnsureCapacity(ref bytes, offset, 5);
+            target.ReserveAndCommit(5, out byte[] bytes, out int offset);
             unchecked
             {
                 bytes[offset] = MessagePackCode.Map32;
@@ -788,9 +800,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteFixedArrayHeaderUnsafe(ref byte[] bytes, int offset, int count)
+        public static int WriteFixedArrayHeaderUnsafe(TargetBuffer target, int count)
         {
-            EnsureCapacity(ref bytes, offset, 1);
+            target.ReserveAndCommit(1, out byte[] bytes, out int offset);
             bytes[offset] = (byte)(MessagePackCode.MinFixArray | count);
             return 1;
         }
@@ -801,11 +813,11 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteArrayHeader(ref byte[] bytes, int offset, int count)
+        public static int WriteArrayHeader(TargetBuffer target, int count)
         {
             checked
             {
-                return WriteArrayHeader(ref bytes, offset, (uint)count);
+                return WriteArrayHeader(target, (uint)count);
             }
         }
 
@@ -815,17 +827,17 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteArrayHeader(ref byte[] bytes, int offset, uint count)
+        public static int WriteArrayHeader(TargetBuffer target, uint count)
         {
             if (count <= MessagePackRange.MaxFixArrayCount)
             {
-                EnsureCapacity(ref bytes, offset, 1);
+                target.ReserveAndCommit(1, out byte[] bytes, out int offset);
                 bytes[offset] = (byte)(MessagePackCode.MinFixArray | count);
                 return 1;
             }
             else if (count <= ushort.MaxValue)
             {
-                EnsureCapacity(ref bytes, offset, 3);
+                target.ReserveAndCommit(3, out byte[] bytes, out int offset);
                 unchecked
                 {
                     bytes[offset] = MessagePackCode.Array16;
@@ -836,7 +848,7 @@ namespace MessagePack
             }
             else
             {
-                EnsureCapacity(ref bytes, offset, 5);
+                target.ReserveAndCommit(5, out byte[] bytes, out int offset);
                 unchecked
                 {
                     bytes[offset] = MessagePackCode.Array32;
@@ -855,9 +867,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteArrayHeaderForceArray32Block(ref byte[] bytes, int offset, uint count)
+        public static int WriteArrayHeaderForceArray32Block(TargetBuffer target, uint count)
         {
-            EnsureCapacity(ref bytes, offset, 5);
+            target.ReserveAndCommit(5, out byte[] bytes, out int offset);
             unchecked
             {
                 bytes[offset] = MessagePackCode.Array32;
@@ -897,9 +909,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteBoolean(ref byte[] bytes, int offset, bool value)
+        public static int WriteBoolean(TargetBuffer target, bool value)
         {
-            EnsureCapacity(ref bytes, offset, 1);
+            target.ReserveAndCommit(1, out byte[] bytes, out int offset);
 
             bytes[offset] = (value ? MessagePackCode.True : MessagePackCode.False);
             return 1;
@@ -917,17 +929,17 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteByte(ref byte[] bytes, int offset, byte value)
+        public static int WriteByte(TargetBuffer target, byte value)
         {
             if (value <= MessagePackCode.MaxFixInt)
             {
-                EnsureCapacity(ref bytes, offset, 1);
+                target.ReserveAndCommit(1, out byte[] bytes, out int offset);
                 bytes[offset] = value;
                 return 1;
             }
             else
             {
-                EnsureCapacity(ref bytes, offset, 2);
+                target.ReserveAndCommit(2, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.UInt8;
                 bytes[offset + 1] = value;
                 return 2;
@@ -937,9 +949,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteByteForceByteBlock(ref byte[] bytes, int offset, byte value)
+        public static int WriteByteForceByteBlock(TargetBuffer target, byte value)
         {
-            EnsureCapacity(ref bytes, offset, 2);
+            target.ReserveAndCommit(2, out byte[] bytes, out int offset);
             bytes[offset] = MessagePackCode.UInt8;
             bytes[offset + 1] = value;
             return 2;
@@ -956,32 +968,32 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteBytes(ref byte[] bytes, int offset, byte[] value)
+        public static int WriteBytes(TargetBuffer target, byte[] value)
         {
             if (value == null)
             {
-                return WriteNil(ref bytes, offset);
+                return WriteNil(target);
             }
             else
             {
-                return WriteBytes(ref bytes, offset, value, 0, value.Length);
+                return WriteBytes(target, value, 0, value.Length);
             }
         }
 
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteBytes(ref byte[] dest, int dstOffset, byte[] src, int srcOffset, int count)
+        public static int WriteBytes(TargetBuffer target, byte[] src, int srcOffset, int count)
         {
             if (src == null)
             {
-                return WriteNil(ref dest, dstOffset);
+                return WriteNil(target);
             }
 
             if (count <= byte.MaxValue)
             {
                 var size = count + 2;
-                EnsureCapacity(ref dest, dstOffset, size);
+                target.ReserveAndCommit(size, out byte[] dest, out int dstOffset);
 
                 dest[dstOffset] = MessagePackCode.Bin8;
                 dest[dstOffset + 1] = (byte)count;
@@ -992,7 +1004,7 @@ namespace MessagePack
             else if (count <= UInt16.MaxValue)
             {
                 var size = count + 3;
-                EnsureCapacity(ref dest, dstOffset, size);
+                target.ReserveAndCommit(size, out byte[] dest, out int dstOffset);
 
                 unchecked
                 {
@@ -1007,7 +1019,7 @@ namespace MessagePack
             else
             {
                 var size = count + 5;
-                EnsureCapacity(ref dest, dstOffset, size);
+                target.ReserveAndCommit(size, out byte[] dest, out int dstOffset);
 
                 unchecked
                 {
@@ -1042,18 +1054,18 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteSByte(ref byte[] bytes, int offset, sbyte value)
+        public static int WriteSByte(TargetBuffer target, sbyte value)
         {
             if (value < MessagePackRange.MinFixNegativeInt)
             {
-                EnsureCapacity(ref bytes, offset, 2);
+                target.ReserveAndCommit(2, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.Int8;
                 bytes[offset + 1] = unchecked((byte)(value));
                 return 2;
             }
             else
             {
-                EnsureCapacity(ref bytes, offset, 1);
+                target.ReserveAndCommit(1, out byte[] bytes, out int offset);
                 bytes[offset] = unchecked((byte)value);
                 return 1;
             }
@@ -1062,9 +1074,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteSByteForceSByteBlock(ref byte[] bytes, int offset, sbyte value)
+        public static int WriteSByteForceSByteBlock(TargetBuffer target, sbyte value)
         {
-            EnsureCapacity(ref bytes, offset, 2);
+            target.ReserveAndCommit(2, out byte[] bytes, out int offset);
             bytes[offset] = MessagePackCode.Int8;
             bytes[offset + 1] = unchecked((byte)(value));
             return 2;
@@ -1081,10 +1093,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteSingle(ref byte[] bytes, int offset, float value)
+        public static int WriteSingle(TargetBuffer target, float value)
         {
-            EnsureCapacity(ref bytes, offset, 5);
-
+            target.ReserveAndCommit(5, out byte[] bytes, out int offset);
             bytes[offset] = MessagePackCode.Float32;
 
             var num = new Float32Bits(value);
@@ -1117,9 +1128,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteDouble(ref byte[] bytes, int offset, double value)
+        public static int WriteDouble(TargetBuffer target, double value)
         {
-            EnsureCapacity(ref bytes, offset, 9);
+            target.ReserveAndCommit(9, out byte[] bytes, out int offset);
 
             bytes[offset] = MessagePackCode.Float64;
 
@@ -1161,27 +1172,27 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteInt16(ref byte[] bytes, int offset, short value)
+        public static int WriteInt16(TargetBuffer target, short value)
         {
             if (value >= 0)
             {
                 // positive int(use uint)
                 if (value <= MessagePackRange.MaxFixPositiveInt)
                 {
-                    EnsureCapacity(ref bytes, offset, 1);
+                    target.ReserveAndCommit(1, out byte[] bytes, out int offset);
                     bytes[offset] = unchecked((byte)value);
                     return 1;
                 }
                 else if (value <= byte.MaxValue)
                 {
-                    EnsureCapacity(ref bytes, offset, 2);
+                    target.ReserveAndCommit(2, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.UInt8;
                     bytes[offset + 1] = unchecked((byte)value);
                     return 2;
                 }
                 else
                 {
-                    EnsureCapacity(ref bytes, offset, 3);
+                    target.ReserveAndCommit(3, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.UInt16;
                     bytes[offset + 1] = unchecked((byte)(value >> 8));
                     bytes[offset + 2] = unchecked((byte)value);
@@ -1193,20 +1204,20 @@ namespace MessagePack
                 // negative int(use int)
                 if (MessagePackRange.MinFixNegativeInt <= value)
                 {
-                    EnsureCapacity(ref bytes, offset, 1);
+                    target.ReserveAndCommit(1, out byte[] bytes, out int offset);
                     bytes[offset] = unchecked((byte)value);
                     return 1;
                 }
                 else if (sbyte.MinValue <= value)
                 {
-                    EnsureCapacity(ref bytes, offset, 2);
+                    target.ReserveAndCommit(2, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.Int8;
                     bytes[offset + 1] = unchecked((byte)value);
                     return 2;
                 }
                 else
                 {
-                    EnsureCapacity(ref bytes, offset, 3);
+                    target.ReserveAndCommit(3, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.Int16;
                     bytes[offset + 1] = unchecked((byte)(value >> 8));
                     bytes[offset + 2] = unchecked((byte)value);
@@ -1218,9 +1229,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteInt16ForceInt16Block(ref byte[] bytes, int offset, short value)
+        public static int WriteInt16ForceInt16Block(TargetBuffer target, short value)
         {
-            EnsureCapacity(ref bytes, offset, 3);
+            target.ReserveAndCommit(3, out byte[] bytes, out int offset);
             bytes[offset] = MessagePackCode.Int16;
             bytes[offset + 1] = unchecked((byte)(value >> 8));
             bytes[offset + 2] = unchecked((byte)value);
@@ -1241,9 +1252,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WritePositiveFixedIntUnsafe(ref byte[] bytes, int offset, int value)
+        public static int WritePositiveFixedIntUnsafe(TargetBuffer target, int value)
         {
-            EnsureCapacity(ref bytes, offset, 1);
+            target.ReserveAndCommit(1, out byte[] bytes, out int offset);
             bytes[offset] = (byte)value;
             return 1;
         }
@@ -1251,27 +1262,27 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteInt32(ref byte[] bytes, int offset, int value)
+        public static int WriteInt32(TargetBuffer target, int value)
         {
             if (value >= 0)
             {
                 // positive int(use uint)
                 if (value <= MessagePackRange.MaxFixPositiveInt)
                 {
-                    EnsureCapacity(ref bytes, offset, 1);
+                    target.ReserveAndCommit(1, out byte[] bytes, out int offset);
                     bytes[offset] = unchecked((byte)value);
                     return 1;
                 }
                 else if (value <= byte.MaxValue)
                 {
-                    EnsureCapacity(ref bytes, offset, 2);
+                    target.ReserveAndCommit(2, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.UInt8;
                     bytes[offset + 1] = unchecked((byte)value);
                     return 2;
                 }
                 else if (value <= ushort.MaxValue)
                 {
-                    EnsureCapacity(ref bytes, offset, 3);
+                    target.ReserveAndCommit(3, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.UInt16;
                     bytes[offset + 1] = unchecked((byte)(value >> 8));
                     bytes[offset + 2] = unchecked((byte)value);
@@ -1279,7 +1290,7 @@ namespace MessagePack
                 }
                 else
                 {
-                    EnsureCapacity(ref bytes, offset, 5);
+                    target.ReserveAndCommit(5, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.UInt32;
                     bytes[offset + 1] = unchecked((byte)(value >> 24));
                     bytes[offset + 2] = unchecked((byte)(value >> 16));
@@ -1293,20 +1304,20 @@ namespace MessagePack
                 // negative int(use int)
                 if (MessagePackRange.MinFixNegativeInt <= value)
                 {
-                    EnsureCapacity(ref bytes, offset, 1);
+                    target.ReserveAndCommit(1, out byte[] bytes, out int offset);
                     bytes[offset] = unchecked((byte)value);
                     return 1;
                 }
                 else if (sbyte.MinValue <= value)
                 {
-                    EnsureCapacity(ref bytes, offset, 2);
+                    target.ReserveAndCommit(2, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.Int8;
                     bytes[offset + 1] = unchecked((byte)value);
                     return 2;
                 }
                 else if (short.MinValue <= value)
                 {
-                    EnsureCapacity(ref bytes, offset, 3);
+                    target.ReserveAndCommit(3, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.Int16;
                     bytes[offset + 1] = unchecked((byte)(value >> 8));
                     bytes[offset + 2] = unchecked((byte)value);
@@ -1314,7 +1325,7 @@ namespace MessagePack
                 }
                 else
                 {
-                    EnsureCapacity(ref bytes, offset, 5);
+                    target.ReserveAndCommit(5, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.Int32;
                     bytes[offset + 1] = unchecked((byte)(value >> 24));
                     bytes[offset + 2] = unchecked((byte)(value >> 16));
@@ -1331,9 +1342,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteInt32ForceInt32Block(ref byte[] bytes, int offset, int value)
+        public static int WriteInt32ForceInt32Block(TargetBuffer target, int value)
         {
-            EnsureCapacity(ref bytes, offset, 5);
+            target.ReserveAndCommit(5, out byte[] bytes, out int offset);
             bytes[offset] = MessagePackCode.Int32;
             bytes[offset + 1] = unchecked((byte)(value >> 24));
             bytes[offset + 2] = unchecked((byte)(value >> 16));
@@ -1353,27 +1364,27 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteInt64(ref byte[] bytes, int offset, long value)
+        public static int WriteInt64(TargetBuffer target, long value)
         {
             if (value >= 0)
             {
                 // positive int(use uint)
                 if (value <= MessagePackRange.MaxFixPositiveInt)
                 {
-                    EnsureCapacity(ref bytes, offset, 1);
+                    target.ReserveAndCommit(1, out byte[] bytes, out int offset);
                     bytes[offset] = unchecked((byte)value);
                     return 1;
                 }
                 else if (value <= byte.MaxValue)
                 {
-                    EnsureCapacity(ref bytes, offset, 2);
+                    target.ReserveAndCommit(2, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.UInt8;
                     bytes[offset + 1] = unchecked((byte)value);
                     return 2;
                 }
                 else if (value <= ushort.MaxValue)
                 {
-                    EnsureCapacity(ref bytes, offset, 3);
+                    target.ReserveAndCommit(3, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.UInt16;
                     bytes[offset + 1] = unchecked((byte)(value >> 8));
                     bytes[offset + 2] = unchecked((byte)value);
@@ -1381,7 +1392,7 @@ namespace MessagePack
                 }
                 else if (value <= uint.MaxValue)
                 {
-                    EnsureCapacity(ref bytes, offset, 5);
+                    target.ReserveAndCommit(5, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.UInt32;
                     bytes[offset + 1] = unchecked((byte)(value >> 24));
                     bytes[offset + 2] = unchecked((byte)(value >> 16));
@@ -1391,7 +1402,7 @@ namespace MessagePack
                 }
                 else
                 {
-                    EnsureCapacity(ref bytes, offset, 9);
+                    target.ReserveAndCommit(9, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.UInt64;
                     bytes[offset + 1] = unchecked((byte)(value >> 56));
                     bytes[offset + 2] = unchecked((byte)(value >> 48));
@@ -1409,20 +1420,20 @@ namespace MessagePack
                 // negative int(use int)
                 if (MessagePackRange.MinFixNegativeInt <= value)
                 {
-                    EnsureCapacity(ref bytes, offset, 1);
+                    target.ReserveAndCommit(1, out byte[] bytes, out int offset);
                     bytes[offset] = unchecked((byte)value);
                     return 1;
                 }
                 else if (sbyte.MinValue <= value)
                 {
-                    EnsureCapacity(ref bytes, offset, 2);
+                    target.ReserveAndCommit(2, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.Int8;
                     bytes[offset + 1] = unchecked((byte)value);
                     return 2;
                 }
                 else if (short.MinValue <= value)
                 {
-                    EnsureCapacity(ref bytes, offset, 3);
+                    target.ReserveAndCommit(3, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.Int16;
                     bytes[offset + 1] = unchecked((byte)(value >> 8));
                     bytes[offset + 2] = unchecked((byte)value);
@@ -1430,7 +1441,7 @@ namespace MessagePack
                 }
                 else if (int.MinValue <= value)
                 {
-                    EnsureCapacity(ref bytes, offset, 5);
+                    target.ReserveAndCommit(5, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.Int32;
                     bytes[offset + 1] = unchecked((byte)(value >> 24));
                     bytes[offset + 2] = unchecked((byte)(value >> 16));
@@ -1440,7 +1451,7 @@ namespace MessagePack
                 }
                 else
                 {
-                    EnsureCapacity(ref bytes, offset, 9);
+                    target.ReserveAndCommit(9, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.Int64;
                     bytes[offset + 1] = unchecked((byte)(value >> 56));
                     bytes[offset + 2] = unchecked((byte)(value >> 48));
@@ -1458,9 +1469,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteInt64ForceInt64Block(ref byte[] bytes, int offset, long value)
+        public static int WriteInt64ForceInt64Block(TargetBuffer target, long value)
         {
-            EnsureCapacity(ref bytes, offset, 9);
+            target.ReserveAndCommit(9, out byte[] bytes, out int offset);
             bytes[offset] = MessagePackCode.Int64;
             bytes[offset + 1] = unchecked((byte)(value >> 56));
             bytes[offset + 2] = unchecked((byte)(value >> 48));
@@ -1484,24 +1495,24 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteUInt16(ref byte[] bytes, int offset, ushort value)
+        public static int WriteUInt16(TargetBuffer target, ushort value)
         {
             if (value <= MessagePackRange.MaxFixPositiveInt)
             {
-                EnsureCapacity(ref bytes, offset, 1);
+                target.ReserveAndCommit(1, out byte[] bytes, out int offset);
                 bytes[offset] = unchecked((byte)value);
                 return 1;
             }
             else if (value <= byte.MaxValue)
             {
-                EnsureCapacity(ref bytes, offset, 2);
+                target.ReserveAndCommit(2, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.UInt8;
                 bytes[offset + 1] = unchecked((byte)value);
                 return 2;
             }
             else
             {
-                EnsureCapacity(ref bytes, offset, 3);
+                target.ReserveAndCommit(3, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.UInt16;
                 bytes[offset + 1] = unchecked((byte)(value >> 8));
                 bytes[offset + 2] = unchecked((byte)value);
@@ -1512,9 +1523,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteUInt16ForceUInt16Block(ref byte[] bytes, int offset, ushort value)
+        public static int WriteUInt16ForceUInt16Block(TargetBuffer target, ushort value)
         {
-            EnsureCapacity(ref bytes, offset, 3);
+            target.ReserveAndCommit(3, out byte[] bytes, out int offset);
             bytes[offset] = MessagePackCode.UInt16;
             bytes[offset + 1] = unchecked((byte)(value >> 8));
             bytes[offset + 2] = unchecked((byte)value);
@@ -1532,24 +1543,24 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteUInt32(ref byte[] bytes, int offset, uint value)
+        public static int WriteUInt32(TargetBuffer target, uint value)
         {
             if (value <= MessagePackRange.MaxFixPositiveInt)
             {
-                EnsureCapacity(ref bytes, offset, 1);
+                target.ReserveAndCommit(1, out byte[] bytes, out int offset);
                 bytes[offset] = unchecked((byte)value);
                 return 1;
             }
             else if (value <= byte.MaxValue)
             {
-                EnsureCapacity(ref bytes, offset, 2);
+                target.ReserveAndCommit(2, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.UInt8;
                 bytes[offset + 1] = unchecked((byte)value);
                 return 2;
             }
             else if (value <= ushort.MaxValue)
             {
-                EnsureCapacity(ref bytes, offset, 3);
+                target.ReserveAndCommit(3, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.UInt16;
                 bytes[offset + 1] = unchecked((byte)(value >> 8));
                 bytes[offset + 2] = unchecked((byte)value);
@@ -1557,7 +1568,7 @@ namespace MessagePack
             }
             else
             {
-                EnsureCapacity(ref bytes, offset, 5);
+                target.ReserveAndCommit(5, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.UInt32;
                 bytes[offset + 1] = unchecked((byte)(value >> 24));
                 bytes[offset + 2] = unchecked((byte)(value >> 16));
@@ -1570,9 +1581,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteUInt32ForceUInt32Block(ref byte[] bytes, int offset, uint value)
+        public static int WriteUInt32ForceUInt32Block(TargetBuffer target, uint value)
         {
-            EnsureCapacity(ref bytes, offset, 5);
+            target.ReserveAndCommit(5, out byte[] bytes, out int offset);
             bytes[offset] = MessagePackCode.UInt32;
             bytes[offset + 1] = unchecked((byte)(value >> 24));
             bytes[offset + 2] = unchecked((byte)(value >> 16));
@@ -1592,24 +1603,24 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteUInt64(ref byte[] bytes, int offset, ulong value)
+        public static int WriteUInt64(TargetBuffer target, ulong value)
         {
             if (value <= MessagePackRange.MaxFixPositiveInt)
             {
-                EnsureCapacity(ref bytes, offset, 1);
+                target.ReserveAndCommit(1, out byte[] bytes, out int offset);
                 bytes[offset] = unchecked((byte)value);
                 return 1;
             }
             else if (value <= byte.MaxValue)
             {
-                EnsureCapacity(ref bytes, offset, 2);
+                target.ReserveAndCommit(2, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.UInt8;
                 bytes[offset + 1] = unchecked((byte)value);
                 return 2;
             }
             else if (value <= ushort.MaxValue)
             {
-                EnsureCapacity(ref bytes, offset, 3);
+                target.ReserveAndCommit(3, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.UInt16;
                 bytes[offset + 1] = unchecked((byte)(value >> 8));
                 bytes[offset + 2] = unchecked((byte)value);
@@ -1617,7 +1628,7 @@ namespace MessagePack
             }
             else if (value <= uint.MaxValue)
             {
-                EnsureCapacity(ref bytes, offset, 5);
+                target.ReserveAndCommit(5, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.UInt32;
                 bytes[offset + 1] = unchecked((byte)(value >> 24));
                 bytes[offset + 2] = unchecked((byte)(value >> 16));
@@ -1627,7 +1638,7 @@ namespace MessagePack
             }
             else
             {
-                EnsureCapacity(ref bytes, offset, 9);
+                target.ReserveAndCommit(9, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.UInt64;
                 bytes[offset + 1] = unchecked((byte)(value >> 56));
                 bytes[offset + 2] = unchecked((byte)(value >> 48));
@@ -1644,9 +1655,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteUInt64ForceUInt64Block(ref byte[] bytes, int offset, ulong value)
+        public static int WriteUInt64ForceUInt64Block(TargetBuffer target, ulong value)
         {
-            EnsureCapacity(ref bytes, offset, 9);
+            target.ReserveAndCommit(9, out byte[] bytes, out int offset);
             bytes[offset] = MessagePackCode.UInt64;
             bytes[offset + 1] = unchecked((byte)(value >> 56));
             bytes[offset + 2] = unchecked((byte)(value >> 48));
@@ -1670,9 +1681,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteChar(ref byte[] bytes, int offset, char value)
+        public static int WriteChar(TargetBuffer target, char value)
         {
-            return WriteUInt16(ref bytes, offset, (ushort)value);
+            return WriteUInt16(target, (ushort)value);
         }
 
 #if NETSTANDARD
@@ -1689,9 +1700,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteFixedStringUnsafe(ref byte[] bytes, int offset, string value, int byteCount)
+        public static int WriteFixedStringUnsafe(TargetBuffer target, string value, int byteCount)
         {
-            EnsureCapacity(ref bytes, offset, byteCount + 1);
+            target.ReserveAndCommit(byteCount + 1, out byte[] bytes, out int offset);
             bytes[offset] = (byte)(MessagePackCode.MinFixStr | byteCount);
             StringEncoding.UTF8.GetBytes(value, 0, value.Length, bytes, offset + 1);
 
@@ -1704,18 +1715,18 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteStringUnsafe(ref byte[] bytes, int offset, string value, int byteCount)
+        public static int WriteStringUnsafe(TargetBuffer target, string value, int byteCount)
         {
             if (byteCount <= MessagePackRange.MaxFixStringLength)
             {
-                EnsureCapacity(ref bytes, offset, byteCount + 1);
+                target.ReserveAndCommit(byteCount + 1, out byte[] bytes, out int offset);
                 bytes[offset] = (byte)(MessagePackCode.MinFixStr | byteCount);
                 StringEncoding.UTF8.GetBytes(value, 0, value.Length, bytes, offset + 1);
                 return byteCount + 1;
             }
             else if (byteCount <= byte.MaxValue)
             {
-                EnsureCapacity(ref bytes, offset, byteCount + 2);
+                target.ReserveAndCommit(byteCount + 2, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.Str8;
                 bytes[offset + 1] = unchecked((byte)byteCount);
                 StringEncoding.UTF8.GetBytes(value, 0, value.Length, bytes, offset + 2);
@@ -1723,7 +1734,7 @@ namespace MessagePack
             }
             else if (byteCount <= ushort.MaxValue)
             {
-                EnsureCapacity(ref bytes, offset, byteCount + 3);
+                target.ReserveAndCommit(byteCount + 3, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.Str16;
                 bytes[offset + 1] = unchecked((byte)(byteCount >> 8));
                 bytes[offset + 2] = unchecked((byte)byteCount);
@@ -1732,7 +1743,7 @@ namespace MessagePack
             }
             else
             {
-                EnsureCapacity(ref bytes, offset, byteCount + 5);
+                target.ReserveAndCommit(byteCount + 5, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.Str32;
                 bytes[offset + 1] = unchecked((byte)(byteCount >> 24));
                 bytes[offset + 2] = unchecked((byte)(byteCount >> 16));
@@ -1746,19 +1757,19 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteStringBytes(ref byte[] bytes, int offset, byte[] utf8stringBytes)
+        public static int WriteStringBytes(TargetBuffer target, byte[] utf8stringBytes)
         {
             var byteCount = utf8stringBytes.Length;
             if (byteCount <= MessagePackRange.MaxFixStringLength)
             {
-                EnsureCapacity(ref bytes, offset, byteCount + 1);
+                target.ReserveAndCommit(byteCount + 1, out byte[] bytes, out int offset);
                 bytes[offset] = (byte)(MessagePackCode.MinFixStr | byteCount);
                 Buffer.BlockCopy(utf8stringBytes, 0, bytes, offset + 1, byteCount);
                 return byteCount + 1;
             }
             else if (byteCount <= byte.MaxValue)
             {
-                EnsureCapacity(ref bytes, offset, byteCount + 2);
+                target.ReserveAndCommit(byteCount + 2, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.Str8;
                 bytes[offset + 1] = unchecked((byte)byteCount);
                 Buffer.BlockCopy(utf8stringBytes, 0, bytes, offset + 2, byteCount);
@@ -1766,7 +1777,7 @@ namespace MessagePack
             }
             else if (byteCount <= ushort.MaxValue)
             {
-                EnsureCapacity(ref bytes, offset, byteCount + 3);
+                target.ReserveAndCommit(byteCount + 3, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.Str16;
                 bytes[offset + 1] = unchecked((byte)(byteCount >> 8));
                 bytes[offset + 2] = unchecked((byte)byteCount);
@@ -1775,7 +1786,7 @@ namespace MessagePack
             }
             else
             {
-                EnsureCapacity(ref bytes, offset, byteCount + 5);
+                target.ReserveAndCommit(byteCount + 5, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.Str32;
                 bytes[offset + 1] = unchecked((byte)(byteCount >> 24));
                 bytes[offset + 2] = unchecked((byte)(byteCount >> 16));
@@ -1826,15 +1837,13 @@ namespace MessagePack
             }
         }
 
-        public static int WriteString(ref byte[] bytes, int offset, string value)
+        public static int WriteString(TargetBuffer target, string value)
         {
-            if (value == null) return WriteNil(ref bytes, offset);
+            if (value == null) return WriteNil(target);
 
             // MaxByteCount -> WritePrefix -> GetBytes has some overheads of `MaxByteCount`
             // solves heuristic length check
-
-            // ensure buffer by MaxByteCount(faster than GetByteCount)
-            MessagePackBinary.EnsureCapacity(ref bytes, offset, StringEncoding.UTF8.GetMaxByteCount(value.Length) + 5);
+            target.Reserve(StringEncoding.UTF8.GetMaxByteCount(value.Length) + 5, out byte[] bytes, out int offset);
 
             int useOffset;
             if (value.Length <= MessagePackRange.MaxFixStringLength)
@@ -1853,7 +1862,6 @@ namespace MessagePack
             {
                 useOffset = 5;
             }
-
             // skip length area
             var writeBeginOffset = offset + useOffset;
             var byteCount = StringEncoding.UTF8.GetBytes(value, 0, value.Length, bytes, writeBeginOffset);
@@ -1866,6 +1874,7 @@ namespace MessagePack
                     Buffer.BlockCopy(bytes, writeBeginOffset, bytes, offset + 1, byteCount);
                 }
                 bytes[offset] = (byte)(MessagePackCode.MinFixStr | byteCount);
+                target.Commit(byteCount + 1);
                 return byteCount + 1;
             }
             else if (byteCount <= byte.MaxValue)
@@ -1877,6 +1886,7 @@ namespace MessagePack
 
                 bytes[offset] = MessagePackCode.Str8;
                 bytes[offset + 1] = unchecked((byte)byteCount);
+                target.Commit(byteCount + 2);
                 return byteCount + 2;
             }
             else if (byteCount <= ushort.MaxValue)
@@ -1889,6 +1899,7 @@ namespace MessagePack
                 bytes[offset] = MessagePackCode.Str16;
                 bytes[offset + 1] = unchecked((byte)(byteCount >> 8));
                 bytes[offset + 2] = unchecked((byte)byteCount);
+                target.Commit(byteCount + 3);
                 return byteCount + 3;
             }
             else
@@ -1903,17 +1914,18 @@ namespace MessagePack
                 bytes[offset + 2] = unchecked((byte)(byteCount >> 16));
                 bytes[offset + 3] = unchecked((byte)(byteCount >> 8));
                 bytes[offset + 4] = unchecked((byte)byteCount);
+                target.Commit(byteCount + 5);
                 return byteCount + 5;
             }
         }
 
-        public static int WriteStringForceStr32Block(ref byte[] bytes, int offset, string value)
+        public static int WriteStringForceStr32Block(TargetBuffer target, string value)
         {
-            if (value == null) return WriteNil(ref bytes, offset);
+            if (value == null) return WriteNil(target);
 
-            MessagePackBinary.EnsureCapacity(ref bytes, offset, StringEncoding.UTF8.GetMaxByteCount(value.Length) + 5);
-
+            target.Reserve(StringEncoding.UTF8.GetMaxByteCount(value.Length) + 5, out byte[] bytes, out int offset);
             var byteCount = StringEncoding.UTF8.GetBytes(value, 0, value.Length, bytes, offset + 5);
+            target.Commit(byteCount);
 
             bytes[offset] = MessagePackCode.Str32;
             bytes[offset + 1] = unchecked((byte)(byteCount >> 24));
@@ -1942,32 +1954,34 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteExtensionFormatHeader(ref byte[] bytes, int offset, sbyte typeCode, int dataLength)
+        public static int WriteExtensionFormatHeader(TargetBuffer target, sbyte typeCode, int dataLength)
         {
+            byte[] bytes = null;
+            int offset = 0;
             switch (dataLength)
             {
                 case 1:
-                    EnsureCapacity(ref bytes, offset, 3);
+                    target.ReserveAndCommit(3, out bytes, out offset);
                     bytes[offset] = MessagePackCode.FixExt1;
                     bytes[offset + 1] = unchecked((byte)typeCode);
                     return 2;
                 case 2:
-                    EnsureCapacity(ref bytes, offset, 4);
+                    target.ReserveAndCommit(4, out bytes, out offset);
                     bytes[offset] = MessagePackCode.FixExt2;
                     bytes[offset + 1] = unchecked((byte)typeCode);
                     return 2;
                 case 4:
-                    EnsureCapacity(ref bytes, offset, 6);
+                    target.ReserveAndCommit(6, out bytes, out offset);
                     bytes[offset] = MessagePackCode.FixExt4;
                     bytes[offset + 1] = unchecked((byte)typeCode);
                     return 2;
                 case 8:
-                    EnsureCapacity(ref bytes, offset, 10);
+                    target.ReserveAndCommit(10, out bytes, out offset);
                     bytes[offset] = MessagePackCode.FixExt8;
                     bytes[offset + 1] = unchecked((byte)typeCode);
                     return 2;
                 case 16:
-                    EnsureCapacity(ref bytes, offset, 18);
+                    target.ReserveAndCommit(18, out bytes, out offset);
                     bytes[offset] = MessagePackCode.FixExt16;
                     bytes[offset + 1] = unchecked((byte)typeCode);
                     return 2;
@@ -1976,7 +1990,7 @@ namespace MessagePack
                     {
                         if (dataLength <= byte.MaxValue)
                         {
-                            EnsureCapacity(ref bytes, offset, dataLength + 3);
+                            target.ReserveAndCommit(dataLength + 3, out bytes, out offset);
                             bytes[offset] = MessagePackCode.Ext8;
                             bytes[offset + 1] = unchecked((byte)(dataLength));
                             bytes[offset + 2] = unchecked((byte)typeCode);
@@ -1984,7 +1998,7 @@ namespace MessagePack
                         }
                         else if (dataLength <= UInt16.MaxValue)
                         {
-                            EnsureCapacity(ref bytes, offset, dataLength + 4);
+                            target.ReserveAndCommit(dataLength + 4, out bytes, out offset);
                             bytes[offset] = MessagePackCode.Ext16;
                             bytes[offset + 1] = unchecked((byte)(dataLength >> 8));
                             bytes[offset + 2] = unchecked((byte)(dataLength));
@@ -1993,7 +2007,7 @@ namespace MessagePack
                         }
                         else
                         {
-                            EnsureCapacity(ref bytes, offset, dataLength + 6);
+                            target.ReserveAndCommit(dataLength + 6, out bytes, out offset);
                             bytes[offset] = MessagePackCode.Ext32;
                             bytes[offset + 1] = unchecked((byte)(dataLength >> 24));
                             bytes[offset + 2] = unchecked((byte)(dataLength >> 16));
@@ -2012,9 +2026,9 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteExtensionFormatHeaderForceExt32Block(ref byte[] bytes, int offset, sbyte typeCode, int dataLength)
+        public static int WriteExtensionFormatHeaderForceExt32Block(TargetBuffer target, sbyte typeCode, int dataLength)
         {
-            EnsureCapacity(ref bytes, offset, dataLength + 6);
+            target.ReserveAndCommit(6, out byte[] bytes, out int offset);
             bytes[offset] = MessagePackCode.Ext32;
             bytes[offset + 1] = unchecked((byte)(dataLength >> 24));
             bytes[offset + 2] = unchecked((byte)(dataLength >> 16));
@@ -2027,26 +2041,28 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteExtensionFormat(ref byte[] bytes, int offset, sbyte typeCode, byte[] data)
+        public static int WriteExtensionFormat(TargetBuffer target, sbyte typeCode, byte[] data)
         {
             var length = data.Length;
+            byte[] bytes = null;
+            int offset = 0;
             switch (length)
             {
                 case 1:
-                    EnsureCapacity(ref bytes, offset, 3);
+                    target.ReserveAndCommit(3, out bytes, out offset);
                     bytes[offset] = MessagePackCode.FixExt1;
                     bytes[offset + 1] = unchecked((byte)typeCode);
                     bytes[offset + 2] = data[0];
                     return 3;
                 case 2:
-                    EnsureCapacity(ref bytes, offset, 4);
+                    target.ReserveAndCommit(4, out bytes, out offset);
                     bytes[offset] = MessagePackCode.FixExt2;
                     bytes[offset + 1] = unchecked((byte)typeCode);
                     bytes[offset + 2] = data[0];
                     bytes[offset + 3] = data[1];
                     return 4;
                 case 4:
-                    EnsureCapacity(ref bytes, offset, 6);
+                    target.ReserveAndCommit(6, out bytes, out offset);
                     bytes[offset] = MessagePackCode.FixExt4;
                     bytes[offset + 1] = unchecked((byte)typeCode);
                     bytes[offset + 2] = data[0];
@@ -2055,7 +2071,7 @@ namespace MessagePack
                     bytes[offset + 5] = data[3];
                     return 6;
                 case 8:
-                    EnsureCapacity(ref bytes, offset, 10);
+                    target.ReserveAndCommit(10, out bytes, out offset);
                     bytes[offset] = MessagePackCode.FixExt8;
                     bytes[offset + 1] = unchecked((byte)typeCode);
                     bytes[offset + 2] = data[0];
@@ -2068,7 +2084,7 @@ namespace MessagePack
                     bytes[offset + 9] = data[7];
                     return 10;
                 case 16:
-                    EnsureCapacity(ref bytes, offset, 18);
+                    target.ReserveAndCommit(18, out bytes, out offset);
                     bytes[offset] = MessagePackCode.FixExt16;
                     bytes[offset + 1] = unchecked((byte)typeCode);
                     bytes[offset + 2] = data[0];
@@ -2093,7 +2109,7 @@ namespace MessagePack
                     {
                         if (data.Length <= byte.MaxValue)
                         {
-                            EnsureCapacity(ref bytes, offset, length + 3);
+                            target.ReserveAndCommit(length + 3, out bytes, out offset);
                             bytes[offset] = MessagePackCode.Ext8;
                             bytes[offset + 1] = unchecked((byte)(length));
                             bytes[offset + 2] = unchecked((byte)typeCode);
@@ -2102,7 +2118,7 @@ namespace MessagePack
                         }
                         else if (data.Length <= UInt16.MaxValue)
                         {
-                            EnsureCapacity(ref bytes, offset, length + 4);
+                            target.ReserveAndCommit(length + 4, out bytes, out offset);
                             bytes[offset] = MessagePackCode.Ext16;
                             bytes[offset + 1] = unchecked((byte)(length >> 8));
                             bytes[offset + 2] = unchecked((byte)(length));
@@ -2112,7 +2128,7 @@ namespace MessagePack
                         }
                         else
                         {
-                            EnsureCapacity(ref bytes, offset, length + 6);
+                            target.ReserveAndCommit(length + 6, out bytes, out offset);
                             bytes[offset] = MessagePackCode.Ext32;
                             bytes[offset + 1] = unchecked((byte)(length >> 24));
                             bytes[offset + 2] = unchecked((byte)(length >> 16));
@@ -2183,7 +2199,7 @@ namespace MessagePack
 #if NETSTANDARD
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        public static int WriteDateTime(ref byte[] bytes, int offset, DateTime dateTime)
+        public static int WriteDateTime(TargetBuffer target, DateTime dateTime)
         {
             dateTime = dateTime.ToUniversalTime();
 
@@ -2226,7 +2242,7 @@ namespace MessagePack
                 {
                     // timestamp 32(seconds in 32-bit unsigned int)
                     var data32 = (UInt32)data64;
-                    EnsureCapacity(ref bytes, offset, 6);
+                    target.ReserveAndCommit(6, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.FixExt4;
                     bytes[offset + 1] = unchecked((byte)ReservedMessagePackExtensionTypeCode.DateTime);
                     bytes[offset + 2] = unchecked((byte)(data32 >> 24));
@@ -2238,7 +2254,7 @@ namespace MessagePack
                 else
                 {
                     // timestamp 64(nanoseconds in 30-bit unsigned int | seconds in 34-bit unsigned int)
-                    EnsureCapacity(ref bytes, offset, 10);
+                    target.ReserveAndCommit(10, out byte[] bytes, out int offset);
                     bytes[offset] = MessagePackCode.FixExt8;
                     bytes[offset + 1] = unchecked((byte)ReservedMessagePackExtensionTypeCode.DateTime);
                     bytes[offset + 2] = unchecked((byte)(data64 >> 56));
@@ -2255,7 +2271,7 @@ namespace MessagePack
             else
             {
                 // timestamp 96( nanoseconds in 32-bit unsigned int | seconds in 64-bit signed int )
-                EnsureCapacity(ref bytes, offset, 15);
+                target.ReserveAndCommit(15, out byte[] bytes, out int offset);
                 bytes[offset] = MessagePackCode.Ext8;
                 bytes[offset + 1] = (byte)12;
                 bytes[offset + 2] = unchecked((byte)ReservedMessagePackExtensionTypeCode.DateTime);
@@ -2656,10 +2672,12 @@ namespace MessagePack
 #endif
         public static int WriteMapHeader(Stream stream, uint count)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteMapHeader(ref buffer, 0, count);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteMapHeader(target, count);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
         /// <summary>
@@ -2670,10 +2688,12 @@ namespace MessagePack
 #endif
         public static int WriteMapHeaderForceMap32Block(Stream stream, uint count)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteMapHeaderForceMap32Block(ref buffer, 0, count);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteMapHeaderForceMap32Block(target, count);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
         /// <summary>
@@ -2742,10 +2762,12 @@ namespace MessagePack
 #endif
         public static int WriteArrayHeader(Stream stream, uint count)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteArrayHeader(ref buffer, 0, count);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteArrayHeader(target, count);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
         /// <summary>
@@ -2756,10 +2778,12 @@ namespace MessagePack
 #endif
         public static int WriteArrayHeaderForceArray32Block(Stream stream, uint count)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteArrayHeaderForceArray32Block(ref buffer, 0, count);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteArrayHeaderForceArray32Block(target, count);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
         /// <summary>
@@ -2795,10 +2819,12 @@ namespace MessagePack
 #endif
         public static int WriteBoolean(Stream stream, bool value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteBoolean(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteBoolean(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -2818,10 +2844,12 @@ namespace MessagePack
 #endif
         public static int WriteByte(Stream stream, byte value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteByte(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteByte(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -2829,10 +2857,12 @@ namespace MessagePack
 #endif
         public static int WriteByteForceByteBlock(Stream stream, byte value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteByteForceByteBlock(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteByteForceByteBlock(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -2852,10 +2882,12 @@ namespace MessagePack
 #endif
         public static int WriteBytes(Stream stream, byte[] value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteBytes(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteBytes(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -2863,10 +2895,12 @@ namespace MessagePack
 #endif
         public static int WriteBytes(Stream stream, byte[] src, int srcOffset, int count)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteBytes(ref buffer, 0, src, srcOffset, count);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteBytes(target, src, srcOffset, count);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -2886,10 +2920,12 @@ namespace MessagePack
 #endif
         public static int WriteSByte(Stream stream, sbyte value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteSByte(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteSByte(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -2897,10 +2933,12 @@ namespace MessagePack
 #endif
         public static int WriteSByteForceSByteBlock(Stream stream, sbyte value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteSByteForceSByteBlock(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteSByteForceSByteBlock(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -2920,10 +2958,12 @@ namespace MessagePack
 #endif
         public static int WriteSingle(Stream stream, float value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteSingle(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteSingle(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -2943,10 +2983,12 @@ namespace MessagePack
 #endif
         public static int WriteDouble(Stream stream, double value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteDouble(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteDouble(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -2966,10 +3008,12 @@ namespace MessagePack
 #endif
         public static int WriteInt16(Stream stream, short value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteInt16(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteInt16(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -2977,10 +3021,12 @@ namespace MessagePack
 #endif
         public static int WriteInt16ForceInt16Block(Stream stream, short value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteInt16ForceInt16Block(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteInt16ForceInt16Block(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -3003,10 +3049,12 @@ namespace MessagePack
 #endif
         public static int WritePositiveFixedIntUnsafe(Stream stream, int value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WritePositiveFixedIntUnsafe(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WritePositiveFixedIntUnsafe(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -3014,10 +3062,12 @@ namespace MessagePack
 #endif
         public static int WriteInt32(Stream stream, int value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteInt32(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteInt32(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
         /// <summary>
@@ -3028,10 +3078,12 @@ namespace MessagePack
 #endif
         public static int WriteInt32ForceInt32Block(Stream stream, int value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteInt32ForceInt32Block(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteInt32ForceInt32Block(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -3051,10 +3103,12 @@ namespace MessagePack
 #endif
         public static int WriteInt64(Stream stream, long value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteInt64(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteInt64(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -3062,10 +3116,13 @@ namespace MessagePack
 #endif
         public static int WriteInt64ForceInt64Block(Stream stream, long value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteInt64ForceInt64Block(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteInt64ForceInt64Block(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
+                
         }
 
 #if NETSTANDARD
@@ -3085,10 +3142,12 @@ namespace MessagePack
 #endif
         public static int WriteUInt16(Stream stream, ushort value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteUInt16(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteUInt16(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -3096,10 +3155,12 @@ namespace MessagePack
 #endif
         public static int WriteUInt16ForceUInt16Block(Stream stream, ushort value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteUInt16ForceUInt16Block(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteUInt16ForceUInt16Block(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -3119,10 +3180,12 @@ namespace MessagePack
 #endif
         public static int WriteUInt32(Stream stream, uint value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteUInt32(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteUInt32(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -3130,10 +3193,12 @@ namespace MessagePack
 #endif
         public static int WriteUInt32ForceUInt32Block(Stream stream, uint value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteUInt32ForceUInt32Block(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteUInt32ForceUInt32Block(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -3153,10 +3218,12 @@ namespace MessagePack
 #endif
         public static int WriteUInt64(Stream stream, ulong value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteUInt64(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteUInt64(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -3164,10 +3231,12 @@ namespace MessagePack
 #endif
         public static int WriteUInt64ForceUInt64Block(Stream stream, ulong value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteUInt64ForceUInt64Block(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteUInt64ForceUInt64Block(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -3187,10 +3256,12 @@ namespace MessagePack
 #endif
         public static int WriteChar(Stream stream, char value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteChar(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteChar(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -3213,10 +3284,12 @@ namespace MessagePack
 #endif
         public static int WriteFixedStringUnsafe(Stream stream, string value, int byteCount)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteFixedStringUnsafe(ref buffer, 0, value, byteCount);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteFixedStringUnsafe(target, value, byteCount);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
         /// <summary>
@@ -3227,10 +3300,12 @@ namespace MessagePack
 #endif
         public static int WriteStringUnsafe(Stream stream, string value, int byteCount)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteStringUnsafe(ref buffer, 0, value, byteCount);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteStringUnsafe(target, value, byteCount);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -3238,26 +3313,32 @@ namespace MessagePack
 #endif
         public static int WriteStringBytes(Stream stream, byte[] utf8stringBytes)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteStringBytes(ref buffer, 0, utf8stringBytes);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteStringBytes(target, utf8stringBytes);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
         public static int WriteString(Stream stream, string value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteString(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteString(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
         public static int WriteStringForceStr32Block(Stream stream, string value)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteStringForceStr32Block(ref buffer, 0, value);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteStringForceStr32Block(target, value);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -3277,10 +3358,12 @@ namespace MessagePack
 #endif
         public static int WriteExtensionFormatHeader(Stream stream, sbyte typeCode, int dataLength)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteExtensionFormatHeader(ref buffer, 0, typeCode, dataLength);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteExtensionFormatHeader(target, typeCode, dataLength);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
         /// <summary>
@@ -3291,10 +3374,12 @@ namespace MessagePack
 #endif
         public static int WriteExtensionFormatHeaderForceExt32Block(Stream stream, sbyte typeCode, int dataLength)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteExtensionFormatHeaderForceExt32Block(ref buffer, 0, typeCode, dataLength);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteExtensionFormatHeaderForceExt32Block(target, typeCode, dataLength);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -3302,10 +3387,12 @@ namespace MessagePack
 #endif
         public static int WriteExtensionFormat(Stream stream, sbyte typeCode, byte[] data)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteExtensionFormat(ref buffer, 0, typeCode, data);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteExtensionFormat(target, typeCode, data);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
@@ -3340,10 +3427,12 @@ namespace MessagePack
 #endif
         public static int WriteDateTime(Stream stream, DateTime dateTime)
         {
-            var buffer = StreamDecodeMemoryPool.GetBuffer();
-            var writeCount = WriteDateTime(ref buffer, 0, dateTime);
-            stream.Write(buffer, 0, writeCount);
-            return writeCount;
+            using (var target = new TargetBuffer())
+            {
+                var writeCount = WriteDateTime(target, dateTime);
+                target.WriteTo(stream);
+                return writeCount;
+            }
         }
 
 #if NETSTANDARD
