@@ -3,7 +3,7 @@
     <metadata>
         <id>Foss.MessagePack</id>
         <version>1.7.3.5</version>
-        <title>MessagePack for C#</title>
+        <title>FOSS MessagePack for C#</title>
         <authors>neuecc</authors>
         <owners>neuecc</owners>
         <projectUrl>https://github.com/neuecc/MessagePack-CSharp/</projectUrl>
