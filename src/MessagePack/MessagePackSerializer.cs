@@ -48,6 +48,23 @@ namespace MessagePack
         }
 
         /// <summary>
+        /// Set array pool to use.
+        /// </summary>
+        public static void SetArrayPool(System.Buffers.ArrayPool<byte> bufferPool)
+        {
+            BufferPool.SetArrayPool(bufferPool);
+        }
+
+        /// <summary>
+        /// Sets the size of the buffers to be pooled.
+        /// </summary>
+        /// <param name="size"></param>
+        public static void SetPooledBufferSize(int size)
+        {
+            TargetBuffer.SetBufferSize(size);
+        }
+
+        /// <summary>
         /// Serialize to binary with default resolver.
         /// </summary>
         public static byte[] Serialize<T>(T obj)

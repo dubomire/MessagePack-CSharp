@@ -7,7 +7,7 @@ namespace MessagePack.Internal
 {
     public class TargetBuffer : IDisposable
     {
-        private const int BufferSize = 65536;
+        private static int? bufferSize;
         private List<byte[]> buffers = new List<byte[]>();
         private List<int> offsets = new List<int>();
         private int lastBufferIndex = -1;
@@ -16,6 +16,27 @@ namespace MessagePack.Internal
         private bool reservedNotCommitted = false;
 
         public int TotalBytes { get; private set; } = 0;
+
+        public static int BufferSize
+        {
+            get
+            {
+                if (!bufferSize.HasValue)
+                {
+                    bufferSize = 65536;
+                }
+                return bufferSize.Value;
+            }
+        }
+
+        public static void SetBufferSize(int size)
+        {
+            if (bufferSize.HasValue)
+            {
+                throw new InvalidOperationException("TaretBuffer.BufferSize is already set.");
+            }
+            bufferSize = size;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ReserveAndCommit(int appendLength, out byte[] bytes, out int offset)

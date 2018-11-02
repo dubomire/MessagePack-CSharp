@@ -5,7 +5,24 @@ namespace MessagePack.Internal
 {
     internal sealed class BufferPool
     {
-        public static readonly ArrayPool<byte> Default = new CustomPool();
+        private static ArrayPool<byte> pool;
+
+        public static ArrayPool<byte> Default
+        {
+            get
+            {
+                if (pool == null)
+                {
+                    pool = ArrayPool<byte>.Shared;
+                }
+                return pool;
+            }
+        }
+
+        public static void SetArrayPool(ArrayPool<byte> arrayPool)
+        {
+            pool = arrayPool;
+        }
 
         public static void Resize(ref byte[] array, int newSize)
         {
